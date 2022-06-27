@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+</head>
+<body>
+    
+
+    <script type="text/javascript">
+        let obj = [];
+        
+        fetch('https://pokeapi.co/api/v2/pokemon/')
+        .then(response => response.json())
+        //.then(data => obj = data);
+        .then(data => getPokemons(data));
+        //.then(data => console.log(data));
+
+        //console.log(obj);
+    
+        //getPokemons();
+        async function getPokemons(pokemon) {
+            /*fetch('https://pokeapi.co/api/v2/pokemon/')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                obj = data;
+                //console.log(obj);
+            });*/
+
+            obj.push(pokemon);
+        }
+
+        console.log(obj);
+        seePokemons();
+
+        function seePokemons() {
+            obj.forEach(element => {
+                console.log(element.count);
+            });
+        }
+
+    </script>
+</body>
+</html>
