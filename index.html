@@ -5,43 +5,99 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokédex</title>
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+
 </head>
 <body>
-    
+    <header>
+        <nav>
 
-    <script type="text/javascript">
-        let obj = [];
+        </nav>
+    </header>
+
+    <section id="pokemon-list" class="container">
+        <h1 class="text-center">POKÉDEX</h1>
         
-        fetch('https://pokeapi.co/api/v2/pokemon/')
-        .then(response => response.json())
-        //.then(data => obj = data);
-        .then(data => getPokemons(data));
-        //.then(data => console.log(data));
+        <div class="list-card-pokemon">
 
-        //console.log(obj);
+        </div>
+
+    </section>
+
+    <footer>
+
+    </footer>
     
-        //getPokemons();
-        async function getPokemons(pokemon) {
-            /*fetch('https://pokeapi.co/api/v2/pokemon/')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                obj = data;
-                //console.log(obj);
-            });*/
+    <script type="text/javascript">
+        var ids_pokemons = [];
+        var id;
+        let data_pokemon = {};
 
-            obj.push(pokemon);
+         // Genera número aleatori
+        function getRandomId(max) {
+            return Math.floor(Math.random() * max);
         }
 
-        console.log(obj);
-        seePokemons();
+        // Munta la carta del Pokémon
+        function printCardPokemon(data) {
+            var html = '<article class="card">';
+            html += '<img src="'+ data.sprites.front_shiny +'" />';
+            html += '<ul>';
+            html += '<li><h2 class="text-center">'+ data.name +'</h2></li>';
+            html += '<li>Atac '+ data.stats[1].base_stat +'</li>';
+            html += '<li>Defensa '+ data.stats[2].base_stat +'</li>';
+            html += '</ul>'
+            html += '</article>';
 
+            const list = document.querySelector("#pokemon-list .list-card-pokemon");
+
+            list.innerHTML += html;
+
+            console.log(data);
+        }
+
+
+        // No para fins a tenir 10 pokemons
+        while ( ids_pokemons.length != 10 ) {
+            id = getRandomId(905);
+
+            // Si id no esta al array l'afegeix
+            if ( !ids_pokemons.includes(id) && id != 0 ) {
+                ids_pokemons.push(id);
+            }
+        }
+
+        const isResponseOk = (response) => {
+            if (!response.ok)
+                throw new Error(response.status);
+            return response.text();
+        }
+        
+        for (var i = 0; i < 9; i++) {
+            
+            fetch('https://pokeapi.co/api/v2/pokemon/'+ids_pokemons[i])
+            .then(response => isResponseOk(response))
+            //.then(data => console.log("Datos: ", data))
+            .then(data => { 
+                data_pokemon = JSON.parse(data);
+                printCardPokemon(data_pokemon);
+            })
+            //.catch(err => console.error("ERROR: ", err.message));
+
+            //console.log(ids_pokemons);
+        }
+
+      
+        //seePokemons();
+
+        /*
         function seePokemons() {
             obj.forEach(element => {
-                console.log(element.count);
+                console.log(element);
             });
         }
+        */
 
     </script>
 </body>

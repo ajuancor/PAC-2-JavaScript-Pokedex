@@ -1,0 +1,63 @@
+.container {    
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+.text-center { text-align: center; }
+
+
+/* Home - Pokémon */
+.list-card-pokemon {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    /* width: clamp(20rem, calc(20rem + 2vw), 22rem); */
+    overflow: hidden;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #000;
+    border-radius: 0.75rem;
+}
+
+.card ul {
+    list-style: none;
+    padding-inline-start: 0px;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+}
