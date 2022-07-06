@@ -10,18 +10,26 @@
 
 </head>
 <body>
-    <header>
-        <nav>
+    <header class="container">
+        <h1 class="text-center">POKÉDEX</h1>
+        <div>
+            <nav>
+                <ul>
+                    <li>Home</li>
+                    <li>Combat</li>
+                </ul>
+            </nav>
+        </div>
 
-        </nav>
     </header>
 
     <section id="pokemon-list" class="container">
-        <h1 class="text-center">POKÉDEX</h1>
-        
-        <div class="list-card-pokemon">
-
+         <div class="searchable">
+            <input type="text" value="" name="pokemonID" id="search-pokemon" placeholder="Introdueix un Pokémon..." class="input_search" />
+            <button id="btn-search-pokemon" class="fa fa-search button_search no_link">Buscar</button>
         </div>
+
+        <div class="list-card-pokemon"></div>
 
     </section>
 
@@ -32,72 +40,186 @@
     <script type="text/javascript">
         var ids_pokemons = [];
         var id;
+        var no_cards = false;
         let data_pokemon = {};
+
+        // Buscador de pokemons
+        const form_pokemon = document.querySelector('#search-pokemon');
+        const button_pokemon = document.querySelector('#btn-search-pokemon');
+
+        /* const filtrar = ()=> {
+            if ( !data_pokemon.length ) {
+                getAllPokemons();
+            }
+
+            if ( Object.entries(data_pokemon).length !== 0 ) {
+                console.log(data_pokemon);
+                const text_search = form_pokemon.value.toLowerCase();
+                for( let pokemon of data_pokemon.results ) {
+                    
+                    if ( pokemon.name.indexOf(text_search) !== -1 ) {
+                        console.log(pokemon.name);
+                    }
+
+                }
+            }
+        } */
+
+        form_pokemon.addEventListener('keyup', getAllPokemon);
+        button_pokemon.addEventListener('click', getAllPokemon);
 
          // Genera número aleatori
         function getRandomId(max) {
             return Math.floor(Math.random() * max);
         }
 
-        // Munta la carta del Pokémon
+        // Obté les dades de tots els pokemons
+        function getAllPokemon() {
+            if ( Object.entries(data_pokemon).length !== 0 ) {
+                //console.log(form_pokemon.value);
+                
+                if ( form_pokemon.value != '' ) {
+                    clearCardsPokemon();
+                    
+                    // Buscador
+                    const text_search = form_pokemon.value.toLowerCase();
+                    let exit_search = false;
+                    for( let pokemon of data_pokemon.results ) {
+                        
+                        if ( pokemon.name.indexOf(text_search) === 0 ) {
+                            getDataPokemon(pokemon.url);
+                            
+                            if ( !exit_search ) {
+                                exit_search = true;
+                            }
+                        }
+                    }
+
+                    if ( !exit_search ) {
+                        no_cards = true;
+                        printCardPokemon('');
+                    }
+
+                } 
+
+                else {
+                    backCardsPokemon();
+                }
+
+            }
+            
+            else {
+                getDataAllPokemon();
+            }
+        
+        }
+        
+        /* PART DATA-PROMISES */
+        const isResponseOk = async (response) => {
+            if (!response.ok)
+                throw new Error(response.status);
+            //return response.text();
+            return await response.json();
+        }
+
+        function getDataAllPokemon() {
+            fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=905')
+            .then(response => isResponseOk(response))
+            .then(data => {
+                //console.log(data);
+                data_pokemon = data;
+                getAllPokemon();
+            })
+            .catch(err => console.error("ERROR: ", err.message));
+        }
+
+        function getDataPokemon(url) {
+            fetch(url)
+            .then(response => isResponseOk(response))
+            .then(data => {  
+                printCardPokemon(data);
+            })
+            .catch(err => console.error("ERROR: ", err.message));
+        }
+
+        // Pinta la carta del Pokémon
         function printCardPokemon(data) {
-            var html = '<article class="card">';
-            html += '<img src="'+ data.sprites.front_shiny +'" />';
-            html += '<ul>';
-            html += '<li><h2 class="text-center">'+ data.name +'</h2></li>';
-            html += '<li>Atac '+ data.stats[1].base_stat +'</li>';
-            html += '<li>Defensa '+ data.stats[2].base_stat +'</li>';
-            html += '</ul>'
-            html += '</article>';
+            if ( data != '' && !no_cards ) {
+                var html = '<article class="card">';
+                html += '<div class="content-img-card"><img src="'+ data.sprites.front_shiny +'" class="img-card-pokemon" /></div>';
+                html += '<div class="content-text-card">';
+                html += '<h2 class="text-center">'+ data.name +'</h2>';
+                html += '<ul>';
+                html += '<li><span>Tipus</span> <span>'+ data.types[0].type.name +'</span></li>';
+                html += '<li><span>Atac</span> <span>'+ data.stats[1].base_stat +'</span></li>';
+                html += '<li><span>Defensa</span> <span>'+ data.stats[2].base_stat +'</span></li>';
+                html += '</ul>';
+                html += '</div>';
+                html += '</article>';
 
-            const list = document.querySelector("#pokemon-list .list-card-pokemon");
+                const list = document.querySelector("#pokemon-list .list-card-pokemon");
+                list.innerHTML += html;
+            }
 
-            list.innerHTML += html;
+            else {
+                var html = "<h1>No s'han trobat resultats</h1>";
+                
+                const list = document.querySelector("#pokemon-list .list-card-pokemon");
+                list.innerHTML = html;
+                
+                setTimeout(no_cards = false, 500);
+            }
 
-            console.log(data);
+            //console.log(data);
         }
 
 
-        // No para fins a tenir 10 pokemons
-        while ( ids_pokemons.length != 10 ) {
-            id = getRandomId(905);
+        // No para fins a tenir 10 números
+        while ( ids_pokemons.length < 10 ) {
+            id =  getRandomId(905);
+            console.log(id);
+            let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
 
             // Si id no esta al array l'afegeix
-            if ( !ids_pokemons.includes(id) && id != 0 ) {
-                ids_pokemons.push(id);
+            if ( !ids_pokemons.includes(url_pokemon) && id != 0 ) {
+                ids_pokemons.push(url_pokemon);
             }
         }
 
-        const isResponseOk = (response) => {
-            if (!response.ok)
-                throw new Error(response.status);
-            return response.text();
+        for (let id_pokemon of ids_pokemons) {
+            getDataPokemon(id_pokemon);
         }
         
+        /*
         for (var i = 0; i < 9; i++) {
-            
             fetch('https://pokeapi.co/api/v2/pokemon/'+ids_pokemons[i])
             .then(response => isResponseOk(response))
             //.then(data => console.log("Datos: ", data))
             .then(data => { 
-                data_pokemon = JSON.parse(data);
-                printCardPokemon(data_pokemon);
+                //data_pokemon = JSON.parse(data);
+                //printCardPokemon(data_pokemon);
+                printCardPokemon(data);
             })
-            //.catch(err => console.error("ERROR: ", err.message));
-
+            .catch(err => console.error("ERROR: ", err.message));
+            
             //console.log(ids_pokemons);
         }
-
-      
-        //seePokemons();
-
-        /*
-        function seePokemons() {
-            obj.forEach(element => {
-                console.log(element);
-            });
-        }
         */
+
+        // Neteja les cartes
+        function clearCardsPokemon() {
+            const list = document.querySelector("#pokemon-list .list-card-pokemon");
+            list.innerHTML = '';
+        }
+
+        // Torna a les cartes del inici
+        function backCardsPokemon() {
+            clearCardsPokemon();
+
+            for (let id_pokemon of ids_pokemons) {
+                getDataPokemon(id_pokemon);
+            }
+        }
 
     </script>
 </body>
