@@ -1,9 +1,16 @@
 /*** STYLES CSS  ***/
 /* General */
+* {
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
     font-size: 14px;
+    margin: 0;
 }
 
 
@@ -46,11 +53,180 @@ img {
 
 .text-center { text-align: center; }
 
+/* Margin bottom */
+.mb0 { margin-bottom: 0px; }
+.mb5 { margin-bottom: 5px; }
+.mb10 { margin-bottom: 10px; }
+.mb15 { margin-bottom: 15px; }
+.mb20 { margin-bottom: 20px; }
+.mb25 { margin-bottom: 25px; }
+.mb30 { margin-bottom: 30px; }
+.mb35 { margin-bottom: 35px; }
+.mb40 { margin-bottom: 40px; }
+.mb45 { margin-bottom: 45px; }
+.mb50 { margin-bottom: 50px; }
+.mb55 { margin-bottom: 55px; }
+.mb60 { margin-bottom: 60px; }
+.mb65 { margin-bottom: 65px; }
+.mb70 { margin-bottom: 70px; }
+.mb75 { margin-bottom: 75px; }
+.mb80 { margin-bottom: 80px; }
+.mb85 { margin-bottom: 85px; }
+.mb90 { margin-bottom: 90px; }
+.mb95 { margin-bottom: 95px; }
+
+
+/* Margin top */
+.mt0 { margin-top: 0px; }
+.mt5 { margin-top: 5px; }
+.mt10 { margin-top: 10px; }
+.mt15 { margin-top: 15px; }
+.mt20 { margin-top: 20px; }
+.mt25 { margin-top: 25px; }
+.mt30 { margin-top: 30px; }
+.mt35 { margin-top: 35px; }
+.mt40 { margin-top: 40px; }
+.mt45 { margin-top: 45px; }
+.mt50 { margin-top: 50px; }
+.mt55 { margin-top: 55px; }
+.mt60 { margin-top: 60px; }
+.mt65 { margin-top: 65px; }
+.mt70 { margin-top: 70px; }
+.mt75 { margin-top: 75px; }
+.mt80 { margin-top: 80px; }
+.mt85 { margin-top: 85px; }
+.mt90 { margin-top: 90px; }
+.mt95 { margin-top: 95px; }
+
+
+/* Padding bottom */
+.pb0 { padding-bottom: 0px; }
+.pb5 { padding-bottom: 5px; }
+.pb10 { padding-bottom: 10px; }
+.pb15 { padding-bottom: 15px; }
+.pb20 { padding-bottom: 20px; }
+.pb25 { padding-bottom: 25px; }
+.pb30 { padding-bottom: 30px; }
+.pb35 { padding-bottom: 35px; }
+.pb40 { padding-bottom: 40px; }
+.pb45 { padding-bottom: 45px; }
+.pb50 { padding-bottom: 50px; }
+.pb55 { padding-bottom: 55px; }
+.pb60 { padding-bottom: 60px; }
+.pb65 { padding-bottom: 65px; }
+.pb70 { padding-bottom: 70px; }
+.pb75 { padding-bottom: 75px; }
+.pb80 { padding-bottom: 80px; }
+.pb85 { padding-bottom: 85px; }
+.pb90 { padding-bottom: 90px; }
+.pb95 { padding-bottom: 95px; }
+.pb100 { padding-bottom: 100px }
+
+
+/* Padding top */
+.pt0 { padding-top: 0px; }
+.pt5 { padding-top: 5px; }
+.pt10 { padding-top: 10px; }
+.pt15 { padding-top: 15px; }
+.pt20 { padding-top: 20px; }
+.pt25 { padding-top: 25px; }
+.pt30 { padding-top: 30px; }
+.pt35 { padding-top: 35px; }
+.pt40 { padding-top: 40px; }
+.pt45 { padding-top: 45px; }
+.pt50 { padding-top: 50px; }
+.pt55 { padding-top: 55px; }
+.pt60 { padding-top: 60px; }
+.pt65 { padding-top: 65px; }
+.pt70 { padding-top: 70px; }
+.pt75 { padding-top: 75px; }
+.pt80 { padding-top: 80px; }
+.pt85 { padding-top: 85px; }
+.pt90 { padding-top: 90px; }
+.pt95 { padding-top: 95px; }
+.pt100 { padding-top: 100px; }
+
+/* - Button - */
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+/* Main Menu */
+.main-menu {
+    background: #fff5ac;
+}
+
+.navbar-menu {
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu ul li {
+    display: inline-block;
+    margin: 0rem 1rem;
+    padding: 1rem;
+    text-transform: uppercase;
+}
+
 
 /* Home - Pokémon */
 .list-card-pokemon {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+}
+
+/* - Buscador - */
+.content-searcher {
+    display: flex;
+    justify-content: end;
+}
+
+.searcher {
+    display: flex;
+    gap: 10px;
+    margin: 1.8rem;
+}
+
+.input_search {
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.button_search {
+    background: #ced4da;
 }
 
 /* - Carta - */
