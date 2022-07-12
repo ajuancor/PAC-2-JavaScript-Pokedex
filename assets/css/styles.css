@@ -190,6 +190,42 @@ img {
     text-transform: uppercase;
 }
 
+/* - Main Footer - */
+.main-footer {
+    background: #000;
+    color: #fff;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* - Spinner - */
+.content-spinner {
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 1rem;
+}
+
+.spinner {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #000000; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
 
 /* Home - Pokémon */
 .list-card-pokemon {
@@ -240,6 +276,12 @@ img {
     background: linear-gradient(0deg, #fff5ac, rgb(255 245 172 / 30%), rgb(255 245 172 / 30%), #fff5ac);
     border: 4px solid rgb(255 226 101 / 90%);
     border-radius: 0.75rem;
+}
+
+.card .title {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    text-transform: capitalize;
 }
 
 .card ul {
