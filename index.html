@@ -55,6 +55,13 @@
         </section>
     </footer>
     
+    <script type="text/javascript">
+        // Params de l'URL
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var pokeParam = urlParams.get('pokeID');
+    </script>
+
     <script type="text/javascript" src="assets/js/main.js"></script>
 </body>
 </html>

@@ -51,6 +51,7 @@ img {
     display: block;
 }
 
+.pointer { cursor: pointer; }
 .text-center { text-align: center; }
 .align-self-center { align-self: center; }
 

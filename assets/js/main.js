@@ -1,27 +1,40 @@
 var ids_pokemons = [];
 var id;
-//var working = false;
 var no_cards = false;
 let data_pokemon = {};
+
+// Variable dedicada a un pokemon individual
+var pokemon_id = false;
+
+if ( pokeParam != null && pokeParam != '' ) {
+    pokemon_id = true;
+}
 
 // Controller
 let controller = new AbortController();
 let signal = controller.signal;
+var controllerTime = "";
 
 // Buscador de pokemons
-var controllerTime = "";
 const form_pokemon = document.querySelector('#search-pokemon');
 const button_pokemon = document.querySelector('#btn-search-pokemon');
 
+
+/* LISTENERS */
 // Al escriure el nom d'un pokemon
 form_pokemon.addEventListener('keyup', getTextSearcher);
 
 // Al clicar el botó de buscar
 button_pokemon.addEventListener('click', getAllPokemon);
 
-// First crides a funcions
-getAllPokemon();
 
+// First crides a funcions
+if ( pokemon_id ) {
+    let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
+    getDataPokemon(url_pokemon);
+} else {
+    getAllPokemon();
+}
 // Genera número aleatori
 function getRandomId(max) {
     return Math.floor(Math.random() * max);
@@ -67,7 +80,8 @@ function getAllPokemon() {
 
             if ( !exit_search ) {
                 no_cards = true;
-                printCardPokemon('');
+                clearCardsPokemon();
+                buildCardPokemon('');
             }
             
             loader('none');
@@ -79,6 +93,7 @@ function getAllPokemon() {
             }
 
             else {
+                // Cartes Originals
                 backCardsPokemon();
                 loader('none');
             }
@@ -116,22 +131,46 @@ function getDataPokemon(url) {
     .then(response => isResponseOk(response))
     .then(data => {
         console.log(data);
-        printCardPokemon(data);
+        buildCardPokemon(data);
     })
     .catch(err => console.error("ERROR: ", err.message));
 }
 
 // Pinta la carta del Pokémon
-function printCardPokemon(pokemon) {
-    if ( pokemon != '' && !no_cards ) {
-        var html = '<article class="card">';
+function buildCardPokemon(pokemon) {
+    if ( pokemon != '' && pokemon_id ) {
+        var html = '<article class="card" data-pokeID="'+pokemon.id+'">';
+        html += '</article>';
+
+        printCardPokemon(html);
+    }
+
+    else if ( pokemon != '' && !no_cards ) {
+        var html = '<article class="card" data-pokeID="'+pokemon.id+'">';
         html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
-        if ( pokemon.sprites.front_default != null ) {
-            html += '<div class="content-img-card"><img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" /></div>';
-        } else {
-            html += '<div class="content-img-card"><img src="./assets/img/default-pokemon.png" class="img-card-pokemon" /></div>';
-        }
         
+        // Img
+        html += '<div class="content-img-card">';
+        
+        // Front img
+        html += '<div class="front pointer" onclick="changeCardImg(this); return false;">';
+        if ( pokemon.sprites.front_default != null ) {
+            html += '<img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />';
+        } else {
+            html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+        }
+        html += '</div>';
+        
+        // Back img
+        html += '<div class="back pointer" onclick="changeCardImg(this); return false;" style="display: none;">';
+        if ( pokemon.sprites.back_default != null ) {
+            html += '<img src="'+ pokemon.sprites.back_default +'" class="img-card-pokemon" />';
+        } else {
+            html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+        }
+        html += '</div>';
+        html += '</div>';
+
         html += '<div class="content-text-card mt10">';
         html += '<ul>';
         html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
@@ -151,20 +190,30 @@ function printCardPokemon(pokemon) {
         html += '</div>';
         html += '</article>';
 
-        const list = document.querySelector("#pokemon-list .list-card-pokemon");
-        list.innerHTML += html;
+        printCardPokemon(html);
     }
 
     else {
         var html = "<h1>No s'han trobat resultats</h1>";
         
-        const list = document.querySelector("#pokemon-list .list-card-pokemon");
-        list.innerHTML = html;
+        printCardPokemon(html);
         
         setTimeout(no_cards = false, 500);
     }
 
     //console.log(pokemon);
+}
+
+
+// Canvia la imatge del pokemon
+function changeCardImg(card) {
+    if ( card.classList.contains('front') ) {
+        card.style.display = 'none';
+        card.nextElementSibling.style.display = 'block';
+   } else {
+        card.style.display = 'none';
+        card.previousElementSibling.style.display = 'block';
+    }
 }
 
 function selectPokemonType(type) {
@@ -250,25 +299,16 @@ function firstCards() {
     }
 }
 
-/*
-for (var i = 0; i < 9; i++) {
-    fetch('https://pokeapi.co/api/v2/pokemon/'+ids_pokemons[i])
-    .then(response => isResponseOk(response))
-    //.then(data => console.log("Datos: ", data))
-    .then(data => { 
-        //data_pokemon = JSON.parse(data);
-        //printCardPokemon(data_pokemon);
-        printCardPokemon(data);
-    })
-    .catch(err => console.error("ERROR: ", err.message));
-    
-    //console.log(ids_pokemons);
-}
-*/
-
+// Mostrar spinner
 function loader(status) {
     const spinner = document.querySelector('.content-spinner');
     spinner.style.display = status;
+}
+
+// Pinta les cartes
+function printCardPokemon(html) {
+    const list = document.querySelector("#pokemon-list .list-card-pokemon");
+    list.innerHTML += html;
 }
 
 // Neteja les cartes
