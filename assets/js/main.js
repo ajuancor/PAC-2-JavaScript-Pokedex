@@ -114,28 +114,39 @@ function getDataAllPokemon() {
 function getDataPokemon(url) {
     fetch(url, { signal: controller.signal })
     .then(response => isResponseOk(response))
-    .then(data => {  
+    .then(data => {
+        console.log(data);
         printCardPokemon(data);
     })
     .catch(err => console.error("ERROR: ", err.message));
 }
 
 // Pinta la carta del Pokémon
-function printCardPokemon(data) {
-    if ( data != '' && !no_cards ) {
+function printCardPokemon(pokemon) {
+    if ( pokemon != '' && !no_cards ) {
         var html = '<article class="card">';
-        html += '<h2 class="title text-center">'+ data.name +'</h2>';
-        if (data.sprites.front_default != null) {
-            html += '<div class="content-img-card"><img src="'+ data.sprites.front_default +'" class="img-card-pokemon" /></div>';
+        html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
+        if ( pokemon.sprites.front_default != null ) {
+            html += '<div class="content-img-card"><img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" /></div>';
         } else {
             html += '<div class="content-img-card"><img src="./assets/img/default-pokemon.png" class="img-card-pokemon" /></div>';
         }
         
         html += '<div class="content-text-card mt10">';
         html += '<ul>';
-        html += '<li><span>Tipus</span> <span>'+ data.types[0].type.name +'</span></li>';
-        html += '<li><span>Atac</span> <span>'+ data.stats[1].base_stat +'</span></li>';
-        html += '<li><span>Defensa</span> <span>'+ data.stats[2].base_stat +'</span></li>';
+        html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
+        if ( pokemon.types[0].type.name != null ) {
+            html += selectPokemonType(pokemon.types[0].type.name);
+        }
+        
+       if ( pokemon.types.hasOwnProperty(1) ) {
+            if ( pokemon.types[1].type.name != null ) {
+                html += selectPokemonType(pokemon.types[1].type.name);
+            }
+        }
+        html += '</span></li>';
+        html += '<li><span>Atac</span> <span>'+ pokemon.stats[1].base_stat +'</span></li>';
+        html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
         html += '</ul>';
         html += '</div>';
         html += '</article>';
@@ -153,7 +164,70 @@ function printCardPokemon(data) {
         setTimeout(no_cards = false, 500);
     }
 
-    //console.log(data);
+    //console.log(pokemon);
+}
+
+function selectPokemonType(type) {
+    let icon = '';
+    switch (type) {
+        case 'normal':
+        default:
+            icon = '<img src="assets/img/icons/icon_normal.webp" class="img-type-pokemon" alt="Normal" title="Normal" />';
+            break;
+        case 'fighting':
+            icon = '<img src="assets/img/icons/icon_lucha.webp" class="img-type-pokemon" alt="Lluita" title="Lluita" />';
+            break;
+        case 'flying':
+            icon = '<img src="assets/img/icons/icon_volador.webp" class="img-type-pokemon" alt="Volador" title="Volador" />';
+            break;
+        case 'poison':
+            icon = '<img src="assets/img/icons/icon_veneno.webp" class="img-type-pokemon" alt="Verí" title="Verí" />';
+            break;
+        case 'ground':
+            icon = '<img src="assets/img/icons/icon_tierra.webp" class="img-type-pokemon" alt="Terra" title="Terra" />';
+            break;
+        case 'rock':
+            icon = '<img src="assets/img/icons/icon_roca.webp" class="img-type-pokemon" alt="Roca" title="Roca" />';
+            break;
+        case 'bug':
+            icon = '<img src="assets/img/icons/icon_bicho.webp" class="img-type-pokemon" alt="Bicho" title="Bicho" />';
+            break;
+        case 'ghost':
+            icon = '<img src="assets/img/icons/icon_fantasma.webp" class="img-type-pokemon" alt="Fantasma" title="Fantasma" />';
+            break;
+        case 'steel':
+            icon = '<img src="assets/img/icons/icon_acero.webp" class="img-type-pokemon" alt="Acero" title="Acero" />';
+            break;
+        case 'fire':
+            icon = '<img src="assets/img/icons/icon_fuego.webp" class="img-type-pokemon" alt="Fuego" title="Fuego" />';
+            break;
+        case 'water':
+            icon = '<img src="assets/img/icons/icon_agua.webp" class="img-type-pokemon" alt="Agua" title="Agua" />';
+            break;
+        case 'grass':
+            icon = '<img src="assets/img/icons/icon_planta.webp" class="img-type-pokemon" alt="Planta" title="Planta" />';
+            break;
+        case 'electric':
+            icon = '<img src="assets/img/icons/icon_electrico.webp" class="img-type-pokemon" alt="Electric" title="Electric" />';
+            break;
+        case 'psychic':
+            icon = '<img src="assets/img/icons/icon_psiquico.webp" class="img-type-pokemon" alt="Psiquic" title="Psiquic" />';
+            break;
+        case 'ice':
+            icon = '<img src="assets/img/icons/icon_hielo.webp" class="img-type-pokemon" alt="Gel" title="Gel" />';
+            break;
+        case 'dragon':
+            icon = '<img src="assets/img/icons/icon_dragon.webp" class="img-type-pokemon" alt="Dragon" title="Dragon" />';
+            break;
+        case 'dark':
+            icon = '<img src="assets/img/icons/icon_siniestro.webp" class="img-type-pokemon" alt="Siniestro" title="Siniestro" />';
+            break;
+        case 'fairy':
+            icon = '<img src="assets/img/icons/icon_hada.webp" class="img-type-pokemon" alt="Fada" title="Fada" />';
+            break;
+    }
+
+    return icon;
 }
 
 // Primeres cartes 

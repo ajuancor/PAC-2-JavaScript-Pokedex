@@ -52,6 +52,7 @@ img {
 }
 
 .text-center { text-align: center; }
+.align-self-center { align-self: center; }
 
 /* Margin bottom */
 .mb0 { margin-bottom: 0px; }
@@ -299,6 +300,11 @@ img {
     margin-bottom: 5px;
 }
 
+.card .content-types-pokemon {
+    display: flex;
+    gap: 5px;
+}
+
 /* - Imatges - */
 .content-img-card {
     align-self: center;
@@ -311,4 +317,9 @@ img {
 .img-card-pokemon {
     width: 120px;
     height: 120px;
+}
+
+.img-type-pokemon {
+    width: 28px;
+    height: 28px;
 }
