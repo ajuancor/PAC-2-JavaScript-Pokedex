@@ -6,8 +6,23 @@ let data_pokemon = {};
 // Variable dedicada a un pokemon individual
 var pokemon_id = false;
 
-if ( pokeParam != null && pokeParam != '' ) {
-    pokemon_id = true;
+function checkPokeParams() {
+    if ( pokeParam != null && pokeParam != '' ) {
+        pokemon_id = true;
+
+        // Buscador ocult
+        const content_searcher = document.querySelector('.content-searcher');
+        content_searcher.style.display = 'none';
+
+        // Botó tornar al inici
+        const list_original = document.querySelector('.list-original');
+        list_original.style.display = 'block';
+
+        // Al clicar el botó torna a llistar els primers pokemons
+        const button_back = document.querySelector('#btn-back-original-list');
+        button_back.addEventListener('click', backToOriginalList);
+    }
+
 }
 
 // Controller
@@ -27,14 +42,22 @@ form_pokemon.addEventListener('keyup', getTextSearcher);
 // Al clicar el botó de buscar
 button_pokemon.addEventListener('click', getAllPokemon);
 
+checkPokeParams();
+
+/*
+if ( pokemon_id ) {
+    const button_back = document.querySelector('#btn-back-original-list');
+    button_back.addEventListener('click', backToOriginalList);
+}
+*/
 
 // First crides a funcions
 if ( pokemon_id ) {
-    let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
-    getDataPokemon(url_pokemon);
+    getDetailPokemon();
 } else {
     getAllPokemon();
 }
+
 // Genera número aleatori
 function getRandomId(max) {
     return Math.floor(Math.random() * max);
@@ -42,8 +65,8 @@ function getRandomId(max) {
 
 // Espera una mica abans de buscar el contingut del buscador
 function getTextSearcher() {
-    clearTimeout(controllerTime);
     loader('flex');
+    clearTimeout(controllerTime);
     controllerTime = setTimeout(getAllPokemon, 250);
 }
 
@@ -133,16 +156,113 @@ function getDataPokemon(url) {
         console.log(data);
         buildCardPokemon(data);
     })
-    .catch(err => console.error("ERROR: ", err.message));
+    .catch(err => {
+        if ( pokemon_id ) {
+            buildCardPokemon('');
+        }  
+        console.error("ERROR: ", err.message);
+    });
+}
+
+// Fa un crida individual
+function getDetailPokemon() {
+    let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
+    try {
+        getDataPokemon(url_pokemon);
+    } catch (error) {
+        printCardPokemon('');
+    }
 }
 
 // Pinta la carta del Pokémon
 function buildCardPokemon(pokemon) {
+    // Carta individual
     if ( pokemon != '' && pokemon_id ) {
-        var html = '<article class="card" data-pokeID="'+pokemon.id+'">';
+        const detail = document.querySelector("#pokemon-list .detail-card-pokemon");
+        detail.style.display = 'block';
+
+        var html = '<article class="card" data-pokeID="'+ pokemon.id +'">';
+        html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
+
+        // Imgs
+        html += '<div class="imgs-pokemon">';
+        
+            // Img Default pokemon
+            html += '<div class="default-pokemon">';
+                html += '<div class="content-img-card">';
+                
+                // Front img
+                html += '<div class="front">';
+                if ( pokemon.sprites.front_default != null ) {
+                    html += '<img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />';
+                } else {
+                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+                }
+                html += '</div></div>';
+                
+                html += '<div class="content-img-card">';
+
+                // Back img
+                html += '<div class="back">';
+                if ( pokemon.sprites.back_default != null ) {
+                    html += '<img src="'+ pokemon.sprites.back_default +'" class="img-card-pokemon" />';
+                } else {
+                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+                }
+                html += '</div></div>';
+
+            html += '</div>';
+
+            // Img Shiny pokemon
+            html += '<div class="shiny-pokemon">';
+                html += '<div class="content-img-card">';
+                
+                // Front img
+                html += '<div class="front">';
+                if ( pokemon.sprites.front_shiny != null ) {
+                    html += '<img src="'+ pokemon.sprites.front_shiny +'" class="img-card-pokemon" />';
+                } else {
+                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+                }
+                html += '</div></div>';
+                
+                html += '<div class="content-img-card">';
+        
+                // Back img
+                html += '<div class="back">';
+                if ( pokemon.sprites.back_shiny != null ) {
+                    html += '<img src="'+ pokemon.sprites.back_shiny +'" class="img-card-pokemon" />';
+                } else {
+                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+                }
+                html += '</div></div>';
+
+            html += '</div>';
+
+        html += '</div>';
+        
+        // Content text
+        html += '<div class="content-text-card mt10">';
+        html += '<ul>';
+        html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
+        if ( pokemon.types[0].type.name != null ) {
+            html += selectPokemonType(pokemon.types[0].type.name);
+        }
+        
+       if ( pokemon.types.hasOwnProperty(1) ) {
+            if ( pokemon.types[1].type.name != null ) {
+                html += selectPokemonType(pokemon.types[1].type.name);
+            }
+        }
+        html += '</span></li>';
+        html += '<li><span>Atac</span> <span>'+ pokemon.stats[1].base_stat +'</span></li>';
+        html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
+        html += '</ul>';
+        html += '</div>';
+
         html += '</article>';
 
-        printCardPokemon(html);
+        printCardPokemon(html,'detail-card-pokemon');
     }
 
     else if ( pokemon != '' && !no_cards ) {
@@ -188,6 +308,9 @@ function buildCardPokemon(pokemon) {
         html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
         html += '</ul>';
         html += '</div>';
+        html += '<div class="content-more-info text-center">';
+        html += '<button class="btn btn-more-info" onclick="changeURL('+ pokemon.id +')">Més informació</button>'
+        html += '</div>';
         html += '</article>';
 
         printCardPokemon(html);
@@ -202,6 +325,37 @@ function buildCardPokemon(pokemon) {
     }
 
     //console.log(pokemon);
+}
+
+/*
+function clearParamsURL() {
+    location.href = location.href.replace(location.search,'');
+}
+*/
+
+function changeURL(id) {
+    //location.search = '?pokeID=' + id;
+    history.pushState("", document.title, '?pokeID=' + id);
+    
+    // Comprova els parametres de la URL
+    checkURLParams();
+
+    checkPokeParams();
+
+    clearCardsPokemon();
+    getDetailPokemon();
+    
+    console.log(pokeParam);
+}
+
+function backToOriginalList() {
+    pokemon_id = false;
+
+    history.pushState("", document.title, window.location.pathname);
+
+    // Neteja la card individual
+    // Pinta les primeres cartes
+    backCardsPokemon('detail-card-pokemon');
 }
 
 
@@ -306,20 +460,28 @@ function loader(status) {
 }
 
 // Pinta les cartes
-function printCardPokemon(html) {
-    const list = document.querySelector("#pokemon-list .list-card-pokemon");
+function printCardPokemon(html, name_class = "list-card-pokemon") {
+    const list = document.querySelector("#pokemon-list ."+name_class);
     list.innerHTML += html;
 }
 
 // Neteja les cartes
-function clearCardsPokemon() {
-    const list = document.querySelector("#pokemon-list .list-card-pokemon");
+function clearCardsPokemon(name_class = "list-card-pokemon") {
+    const list = document.querySelector("#pokemon-list ."+name_class);
     list.innerHTML = '';
 }
 
 // Torna a les cartes del inici
-function backCardsPokemon() {
-    clearCardsPokemon();
+function backCardsPokemon(name_class = "list-card-pokemon") {
+    clearCardsPokemon(name_class);
+
+    // Buscador visible
+    const content_searcher = document.querySelector('.content-searcher');
+    content_searcher.style.display = 'flex';
+
+    // Botó tornar al inici ocult
+    const list_original = document.querySelector('.list-original');
+    list_original.style.display = 'none';
 
     for (let id_pokemon of ids_pokemons) {
         getDataPokemon(id_pokemon);

@@ -39,11 +39,17 @@
             </div>
         </div>
 
+        <div class="list-original mt10" style="display: none;">
+            <button id="btn-back-original-list" class="btn btn-back-list">Torna al inici</button>
+        </div>
+
         <div class="content-spinner" style="display: none;">
             <div class="spinner"></div>
         </div>
 
         <div class="list-card-pokemon"></div>
+
+        <div class="detail-card-pokemon" style="display: none;"></div>
 
     </section>
 
@@ -56,10 +62,16 @@
     </footer>
     
     <script type="text/javascript">
-        // Params de l'URL
-        var queryString = window.location.search;
-        var urlParams = new URLSearchParams(queryString);
-        var pokeParam = urlParams.get('pokeID');
+        var pokeParam = "";
+
+        function checkURLParams () {
+            // Params de l'URL
+            var queryString = window.location.search;
+            var urlParams = new URLSearchParams(queryString);
+            pokeParam = urlParams.get('pokeID');
+        }
+
+        checkURLParams();
     </script>
 
     <script type="text/javascript" src="assets/js/main.js"></script>
