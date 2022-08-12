@@ -1,3 +1,6 @@
+import getDataAllPokemon from '../services/getPokemons.js';
+import getDataPokemon from '../services/getPokemons.js';
+
 var ids_pokemons = [];
 var id;
 var no_cards = false;
@@ -75,11 +78,7 @@ function getAllPokemon() {
     if ( Object.entries(data_pokemon).length !== 0 ) {
         
         if ( form_pokemon.value != '' ) {
-            /* if (working) {
-                controller.abort();
-                working = false;
-                console.log("abort");
-            }*/
+           
             clearCardsPokemon();
             
             // Buscador
@@ -125,16 +124,18 @@ function getAllPokemon() {
     }
     
     else {
-        getDataAllPokemon();
+        data_pokemon = await getDataAllPokemon();
+        console.log(data_pokemon);
     }
 
 }
 
 /* PART DATA-PROMISES */
+/*
 const isResponseOk = async (response) => {
     if (!response.ok)
         throw new Error(response.status);
-    //return response.text();
+        
     return await response.json();
 }
 
@@ -163,8 +164,9 @@ function getDataPokemon(url) {
         console.error("ERROR: ", err.message);
     });
 }
+*/
 
-// Fa un crida individual
+// Fa una crida individual
 function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
     try {
@@ -176,151 +178,149 @@ function getDetailPokemon() {
 
 // Pinta la carta del Pokémon
 function buildCardPokemon(pokemon) {
+    //https://github.com/LuichidevUOC/search-gifs/blob/main/js/main.js
+
     // Carta individual
     if ( pokemon != '' && pokemon_id ) {
-        const detail = document.querySelector("#pokemon-list .detail-card-pokemon");
-        detail.style.display = 'block';
 
-        var html = '<article class="card" data-pokeID="'+ pokemon.id +'">';
-        html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
+        const template = document.querySelector('#template-card-pkm-solo').content;
+	    const fragment = document.createDocumentFragment();
 
-        // Imgs
-        html += '<div class="imgs-pokemon">';
-        
-            // Img Default pokemon
-            html += '<div class="default-pokemon">';
-                html += '<div class="content-img-card">';
-                
-                // Front img
-                html += '<div class="front">';
-                if ( pokemon.sprites.front_default != null ) {
-                    html += '<img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-                }
-                html += '</div></div>';
-                
-                html += '<div class="content-img-card">';
+        // ID
+        const pokeid = template.querySelector('.card');
+        pokeid.dataset.pokeid = pokemon.id;
 
-                // Back img
-                html += '<div class="back">';
-                if ( pokemon.sprites.back_default != null ) {
-                    html += '<img src="'+ pokemon.sprites.back_default +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-                }
-                html += '</div></div>';
+        // TITLE
+        template.querySelector('.card-title').innerHTML = pokemon.name;
 
-            html += '</div>';
+        // IMAGES
+        // Default form
+        // Front
+        if ( pokemon.sprites.front_default != null ) {
+            template.querySelector('.default-pokemon .front .img-card-pokemon').setAttribute('src', pokemon.sprites.front_default);
+        } else {
+            template.querySelector('.default-pokemon .front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.default-pokemon .front .img-card-pokemon').setAttribute('alt', pokemon.name);
 
-            // Img Shiny pokemon
-            html += '<div class="shiny-pokemon">';
-                html += '<div class="content-img-card">';
-                
-                // Front img
-                html += '<div class="front">';
-                if ( pokemon.sprites.front_shiny != null ) {
-                    html += '<img src="'+ pokemon.sprites.front_shiny +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-                }
-                html += '</div></div>';
-                
-                html += '<div class="content-img-card">';
-        
-                // Back img
-                html += '<div class="back">';
-                if ( pokemon.sprites.back_shiny != null ) {
-                    html += '<img src="'+ pokemon.sprites.back_shiny +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-                }
-                html += '</div></div>';
+        // Back
+        if ( pokemon.sprites.back_default != null ) {
+            template.querySelector('.default-pokemon .back .img-card-pokemon').setAttribute('src', pokemon.sprites.back_default);
+        } else {
+            template.querySelector('.default-pokemon .back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.default-pokemon .back .img-card-pokemon').setAttribute('alt', pokemon.name);
 
-            html += '</div>';
+        // Shiny form
+        // Front
+        if ( pokemon.sprites.front_shiny != null ) {
+            template.querySelector('.shiny-pokemon .front .img-card-pokemon').setAttribute('src', pokemon.sprites.front_shiny);
+        } else {
+            template.querySelector('.shiny-pokemon .front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.shiny-pokemon .front .img-card-pokemon').setAttribute('alt', pokemon.name);
 
-        html += '</div>';
-        
-        // Content text
-        html += '<div class="content-text-card mt10">';
-        html += '<ul>';
-        html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
+        // Back
+        if ( pokemon.sprites.back_shiny != null ) {
+            template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('src', pokemon.sprites.back_shiny);
+        } else {
+            template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+
+        // STATS
+        // Types
         if ( pokemon.types[0].type.name != null ) {
             html += selectPokemonType(pokemon.types[0].type.name);
+            template.querySelector('.content-types-pokemon').innerHTML = selectPokemonType(pokemon.types[0].type.name);
         }
         
        if ( pokemon.types.hasOwnProperty(1) ) {
             if ( pokemon.types[1].type.name != null ) {
                 html += selectPokemonType(pokemon.types[1].type.name);
+                template.querySelector('.content-types-pokemon').innerHTML += selectPokemonType(pokemon.types[1].type.name);
             }
         }
-        html += '</span></li>';
-        html += '<li><span>Atac</span> <span>'+ pokemon.stats[1].base_stat +'</span></li>';
-        html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
-        html += '</ul>';
-        html += '</div>';
 
-        html += '</article>';
+        // Attack & Defense        
+        template.querySelector('.stat-attack').innerHTML = pokemon.stats[1].base_stat;
+        template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
 
-        printCardPokemon(html,'detail-card-pokemon');
+        const clone = template.cloneNode(true);
+		fragment.appendChild(clone);
+
+
+        printCardPokemon(fragment,'detail-card-pokemon');
     }
 
     else if ( pokemon != '' && !no_cards ) {
-        var html = '<article class="card" data-pokeID="'+pokemon.id+'">';
-        html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
-        
-        // Img
-        html += '<div class="content-img-card">';
-        
-        // Front img
-        html += '<div class="front pointer" onclick="changeCardImg(this); return false;">';
-        if ( pokemon.sprites.front_default != null ) {
-            html += '<img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />';
-        } else {
-            html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-        }
-        html += '</div>';
-        
-        // Back img
-        html += '<div class="back pointer" onclick="changeCardImg(this); return false;" style="display: none;">';
-        if ( pokemon.sprites.back_default != null ) {
-            html += '<img src="'+ pokemon.sprites.back_default +'" class="img-card-pokemon" />';
-        } else {
-            html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-        }
-        html += '</div>';
-        html += '</div>';
 
-        html += '<div class="content-text-card mt10">';
-        html += '<ul>';
-        html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
+        const template = document.querySelector('#template-card-pkm').content;
+	    const fragment = document.createDocumentFragment();
+
+        // ID
+        const pokeid = template.querySelector('.card');
+        pokeid.dataset.pokeid = pokemon.id;
+
+        // TITLE
+        template.querySelector('.card-title').innerHTML = pokemon.name;
+
+        // IMAGES
+        // Front
+        if ( pokemon.sprites.front_default != null ) {
+            template.querySelector('.front .img-card-pokemon').setAttribute('src', pokemon.sprites.front_default);
+        } else {
+            template.querySelector('.front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.front .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+        // Back
+        if ( pokemon.sprites.back_default != null ) {
+            template.querySelector('.back .img-card-pokemon').setAttribute('src', pokemon.sprites.back_default);
+        } else {
+            template.querySelector('.back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.back .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+		//template.querySelector('.card-image').setAttribute('src', gif.url);
+		//template.querySelector('.card-image').setAttribute('alt', gif.title);
+		
+        // STATS
+        // Types
         if ( pokemon.types[0].type.name != null ) {
             html += selectPokemonType(pokemon.types[0].type.name);
+            template.querySelector('.content-types-pokemon').innerHTML = selectPokemonType(pokemon.types[0].type.name);
         }
         
        if ( pokemon.types.hasOwnProperty(1) ) {
             if ( pokemon.types[1].type.name != null ) {
                 html += selectPokemonType(pokemon.types[1].type.name);
+                template.querySelector('.content-types-pokemon').innerHTML += selectPokemonType(pokemon.types[1].type.name);
             }
         }
-        html += '</span></li>';
-        html += '<li><span>Atac</span> <span>'+ pokemon.stats[1].base_stat +'</span></li>';
-        html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
-        html += '</ul>';
-        html += '</div>';
-        html += '<div class="content-more-info text-center">';
-        html += '<button class="btn btn-more-info" onclick="changeURL('+ pokemon.id +')">Més informació</button>'
-        html += '</div>';
-        html += '</article>';
 
-        printCardPokemon(html);
+        // Attack & Defense        
+        template.querySelector('.stat-attack').innerHTML = pokemon.stats[1].base_stat;
+        template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
+
+        // MORE INFO
+        template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+')');
+
+        const clone = template.cloneNode(true);
+		fragment.appendChild(clone);
+
+        printCardPokemon(fragment);
     }
 
     else {
-        var html = "<h1>No s'han trobat resultats</h1>";
+        var msg = "No s'han trobat resultats";
+        var html = document.createElement('div');
+        html.innerHTML = msg;
         
+        console.log(html);
         printCardPokemon(html);
-        
+
         setTimeout(no_cards = false, 500);
     }
 
@@ -462,7 +462,8 @@ function loader(status) {
 // Pinta les cartes
 function printCardPokemon(html, name_class = "list-card-pokemon") {
     const list = document.querySelector("#pokemon-list ."+name_class);
-    list.innerHTML += html;
+    //list.innerHTML += html;
+    list.append(html);
 }
 
 // Neteja les cartes
@@ -483,7 +484,15 @@ function backCardsPokemon(name_class = "list-card-pokemon") {
     const list_original = document.querySelector('.list-original');
     list_original.style.display = 'none';
 
-    for (let id_pokemon of ids_pokemons) {
-        getDataPokemon(id_pokemon);
+    // Si ja s'han seleccionat les primeres cartes
+    if ( ids_pokemons.length !== 0 ) {
+        for (let id_pokemon of ids_pokemons) {
+            getDataPokemon(id_pokemon);
+        }
+    } 
+    
+    else {
+        firstCards();
     }
+
 }
