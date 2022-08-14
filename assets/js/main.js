@@ -1,10 +1,21 @@
-import getDataAllPokemon from '../services/getPokemons.js';
-import getDataPokemon from '../services/getPokemons.js';
+import { getDataAllPokemon, getDataPokemon } from '../services/getPokemons.js';
+//import getDataPokemon from '../services/getPokemons.js';
 
 var ids_pokemons = [];
 var id;
 var no_cards = false;
 let data_pokemon = {};
+
+window.history.pushState = new Proxy(window.history.pushState, {
+    apply: (target, thisArg, argArray) => {
+      // trigger here what you need
+      // Comprova els parametres de la URL
+        //pokeParam = checkURLParams();
+        changeContextURL();
+      return target.apply(thisArg, argArray);
+    },
+    
+  });
 
 // Variable dedicada a un pokemon individual
 var pokemon_id = false;
@@ -74,7 +85,7 @@ function getTextSearcher() {
 }
 
 // Obté les dades de tots els pokemons
-function getAllPokemon() {
+async function getAllPokemon() {
     if ( Object.entries(data_pokemon).length !== 0 ) {
         
         if ( form_pokemon.value != '' ) {
@@ -84,7 +95,6 @@ function getAllPokemon() {
             // Buscador
             const text_search = form_pokemon.value.toLowerCase();
             let exit_search = false;
-            //working = true;
             
             for( let pokemon of data_pokemon.results ) {
                 
@@ -125,7 +135,8 @@ function getAllPokemon() {
     
     else {
         data_pokemon = await getDataAllPokemon();
-        console.log(data_pokemon);
+        //console.log(data_pokemon);
+        getAllPokemon();
     }
 
 }
@@ -167,10 +178,11 @@ function getDataPokemon(url) {
 */
 
 // Fa una crida individual
-function getDetailPokemon() {
+async function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
     try {
-        getDataPokemon(url_pokemon);
+        const pkm = await getDataPokemon(url_pokemon);
+        buildCardPokemon(pkm);
     } catch (error) {
         printCardPokemon('');
     }
@@ -305,7 +317,13 @@ function buildCardPokemon(pokemon) {
         template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
 
         // MORE INFO
-        template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+')');
+        template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+');');
+        
+        /*template.querySelector('.btn-more-info').setAttribute('id', 'pokemon-more-'+pokemon.id);
+        const btn_more = template.querySelector('#pokemon-more-'+pokemon.id);
+        btn_more.addEventListener('click', function(){
+            alert('hola');
+        });*/
 
         const clone = template.cloneNode(true);
 		fragment.appendChild(clone);
@@ -327,48 +345,15 @@ function buildCardPokemon(pokemon) {
     //console.log(pokemon);
 }
 
-/*
-function clearParamsURL() {
-    location.href = location.href.replace(location.search,'');
-}
-*/
-
-function changeURL(id) {
-    //location.search = '?pokeID=' + id;
-    history.pushState("", document.title, '?pokeID=' + id);
-    
-    // Comprova els parametres de la URL
-    checkURLParams();
-
-    checkPokeParams();
-
-    clearCardsPokemon();
-    getDetailPokemon();
-    
-    console.log(pokeParam);
-}
-
 function backToOriginalList() {
     pokemon_id = false;
 
     history.pushState("", document.title, window.location.pathname);
 
-    // Neteja la card individual
-    // Pinta les primeres cartes
+    // Neteja la card individual i pinta les primeres cartes
     backCardsPokemon('detail-card-pokemon');
 }
 
-
-// Canvia la imatge del pokemon
-function changeCardImg(card) {
-    if ( card.classList.contains('front') ) {
-        card.style.display = 'none';
-        card.nextElementSibling.style.display = 'block';
-   } else {
-        card.style.display = 'none';
-        card.previousElementSibling.style.display = 'block';
-    }
-}
 
 function selectPokemonType(type) {
     let icon = '';
@@ -434,7 +419,9 @@ function selectPokemonType(type) {
 }
 
 // Primeres cartes 
-function firstCards() {
+async function firstCards() {
+    // Guardar cartes a localStorage
+
     // No para fins a tenir 10 números
     while ( ids_pokemons.length < 10 ) {
         id = getRandomId(905);
@@ -448,12 +435,37 @@ function firstCards() {
         }
     }
 
+    loader('flex');
+    
     for (let id_pokemon of ids_pokemons) {
-        getDataPokemon(id_pokemon);
+        // Obté les dades d'un pokemon
+        const pkm = await getDataPokemon(id_pokemon);
+
+        // Construeix una carta i la pinta
+        buildCardPokemon(pkm);
     }
+
+    loader('none');
+}
+
+// Canvi de dades al canviar l'URL
+function changeContextURL() {
+    //history.pushState("", document.title, '?pokeID=' + id);
+    
+    // Comprova els parametres de la URL
+    pokeParam = checkURLParams();
+    
+    checkPokeParams();
+
+    clearCardsPokemon();
+    getDetailPokemon();
+    
+    //console.log(pokeParam);
 }
 
 // Mostrar spinner
+// Status possibles -> Visible = 'flex'
+//                  -> Ocult = 'none'
 function loader(status) {
     const spinner = document.querySelector('.content-spinner');
     spinner.style.display = status;

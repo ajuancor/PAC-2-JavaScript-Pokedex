@@ -12,7 +12,18 @@
 <body>
     <header class="">
         <div class="container">
-            <h1 class="text-center">POKÉDEX</h1>
+            <div class="row">
+                <div class="d-flex align-self-center justify-content-center">
+                    <h1 class="text-center">POKÉDEX</h1>
+                    <button id="btn_theme" class="btn btn-theme">Hola</button>
+                    <div class="controls">
+                        <label for="dark_theme">Dark</label>
+                        <input type="radio" name="theme" id="dark_theme" value="dark" />
+                        <label for="light_theme">Light</label>
+                        <input type="radio" name="theme" id="light_theme" value="light" />
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="main-menu">
@@ -65,7 +76,7 @@
                     <div class="content-img-card">
                         <!-- Front img -->
                         <div class="front">
-                            <img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />
+                            <img src="" class="img-card-pokemon" />
                         </div>
                     </div>
                     
@@ -159,11 +170,15 @@
             var queryString = window.location.search;
             var urlParams = new URLSearchParams(queryString);
             pokeParam = urlParams.get('pokeID');
+            
+            return pokeParam;
         }
 
         checkURLParams();
+        
     </script>
 
     <script defer type='module' src="assets/js/main.js"></script>
+    <script defer src="assets/js/theme.js"></script>
 </body>
 </html>
