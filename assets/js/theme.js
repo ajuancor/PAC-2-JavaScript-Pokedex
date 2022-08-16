@@ -1,24 +1,38 @@
 /* THEME (DARK & LIGHT) */
-const body = document.querySelector('body');
+const body = document.querySelector('#main-body');
+
+let theme = window.localStorage.getItem('theme');
+if ( theme ) { 
+    selectTheme(theme);
+}
+
 
 const radios_theme = document.querySelectorAll('input[name="theme"]');
 
 radios_theme.forEach( x => {
     x.addEventListener('change', function() {
-        switch (this.value) {
-            case 'dark':
-                console.log('dark');
-                break;
-
-            case 'light':
-                console.log('light');
-                break;
-        
-            default:
-                break;
-        }
+        selectTheme(this.value);
     });
 });
+
+function selectTheme(color) {
+    switch (color) {
+        case 'dark':
+            console.log('dark');
+            body.classList.add('dark');
+            body.classList.remove('light');
+            window.localStorage.setItem('theme','dark');
+            break;
+
+        case 'light':
+        default:
+            console.log('light');
+            body.classList.add('light');
+            body.classList.remove('dark');
+            window.localStorage.setItem('theme','light');
+            break;
+    }
+}
 
 /* URLs */
 /*

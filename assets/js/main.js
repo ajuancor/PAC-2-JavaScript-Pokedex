@@ -6,6 +6,7 @@ var id;
 var no_cards = false;
 let data_pokemon = {};
 
+/*
 window.history.pushState = new Proxy(window.history.pushState, {
     apply: (target, thisArg, argArray) => {
       // trigger here what you need
@@ -16,6 +17,7 @@ window.history.pushState = new Proxy(window.history.pushState, {
     },
     
   });
+  */
 
 // Variable dedicada a un pokemon individual
 var pokemon_id = false;
@@ -100,8 +102,9 @@ async function getAllPokemon() {
                 
                 if ( pokemon.name.indexOf(text_search) === 0 /* && working */ ) {
                     console.log(text_search);
-                    getDataPokemon(pokemon.url);
-                    
+                    const pkm = await getDataPokemon(pokemon.url);
+                    buildCardPokemon(pkm);
+
                     if ( !exit_search ) {
                         exit_search = true;
                     }
@@ -485,7 +488,7 @@ function clearCardsPokemon(name_class = "list-card-pokemon") {
 }
 
 // Torna a les cartes del inici
-function backCardsPokemon(name_class = "list-card-pokemon") {
+async function backCardsPokemon(name_class = "list-card-pokemon") {
     clearCardsPokemon(name_class);
 
     // Buscador visible
@@ -499,7 +502,8 @@ function backCardsPokemon(name_class = "list-card-pokemon") {
     // Si ja s'han seleccionat les primeres cartes
     if ( ids_pokemons.length !== 0 ) {
         for (let id_pokemon of ids_pokemons) {
-            getDataPokemon(id_pokemon);
+            const pkm = await getDataPokemon(id_pokemon);
+            buildCardPokemon(pkm);
         }
     } 
     
