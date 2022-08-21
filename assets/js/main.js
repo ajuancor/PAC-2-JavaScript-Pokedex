@@ -193,8 +193,6 @@ async function getDetailPokemon() {
 
 // Pinta la carta del Pokémon
 function buildCardPokemon(pokemon) {
-    //https://github.com/LuichidevUOC/search-gifs/blob/main/js/main.js
-
     // Carta individual
     if ( pokemon != '' && pokemon_id ) {
 
@@ -423,19 +421,34 @@ function selectPokemonType(type) {
 
 // Primeres cartes 
 async function firstCards() {
-    // Guardar cartes a localStorage
+    // Obté cartes de localStorage
+    const pokemons = getFirstPokemon();
+    if ( pokemons !== null ) {
+        ids_pokemons = pokemons;
+    }
+   
+    // console.log(ids_pokemons);
 
-    // No para fins a tenir 10 números
-    while ( ids_pokemons.length < 10 ) {
-        id = getRandomId(905);
-        
-        let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
-        //console.log(url_pokemon);
-        
-        // Si id no esta al array l'afegeix
-        if ( !ids_pokemons.includes(url_pokemon) && id != 0 && id !== null ) {
-            ids_pokemons.push(url_pokemon);
+    // Si ids_pokemons esta buit
+    if ( ids_pokemons.length === 0 ) {
+
+        // No para fins a tenir 10 números
+        while ( ids_pokemons.length < 10 ) {
+            
+            // Obté un id aleatori
+            id = getRandomId(905);
+            
+            let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
+            //console.log(url_pokemon);
+            
+            // Si id no esta al array l'afegeix
+            if ( !ids_pokemons.includes(url_pokemon) && id != 0 && id !== null ) {
+                ids_pokemons.push(url_pokemon);
+            }
         }
+
+        // Guarda les primeres cartes
+        saveFirstPokemon(ids_pokemons);
     }
 
     loader('flex');
@@ -452,6 +465,7 @@ async function firstCards() {
 }
 
 // Canvi de dades al canviar l'URL
+/*
 function changeContextURL() {
     //history.pushState("", document.title, '?pokeID=' + id);
     
@@ -465,6 +479,7 @@ function changeContextURL() {
     
     //console.log(pokeParam);
 }
+*/
 
 // Mostrar spinner
 // Status possibles -> Visible = 'flex'
