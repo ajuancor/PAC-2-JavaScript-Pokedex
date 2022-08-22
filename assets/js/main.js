@@ -1,7 +1,7 @@
 import { getDataAllPokemon, getDataPokemon } from '../services/getPokemons.js';
 //import getDataPokemon from '../services/getPokemons.js';
 
-var ids_pokemons = [];
+var starter_pokemon = [];
 var id;
 var no_cards = false;
 let data_pokemon = {};
@@ -75,11 +75,6 @@ if ( pokemon_id ) {
     getAllPokemon();
 }
 
-// Genera número aleatori
-function getRandomId(max) {
-    return Math.floor(Math.random() * max);
-}
-
 // Espera una mica abans de buscar el contingut del buscador
 function getTextSearcher() {
     loader('flex');
@@ -126,7 +121,7 @@ async function getAllPokemon() {
         }
 
         else {
-            if ( ids_pokemons.length === 0 ) {
+            if ( starter_pokemon.length === 0 ) {
                 firstCards();
             }
 
@@ -360,7 +355,7 @@ function backToOriginalList() {
     backCardsPokemon('detail-card-pokemon');
 }
 
-
+/*
 function selectPokemonType(type) {
     let icon = '';
     switch (type) {
@@ -422,23 +417,23 @@ function selectPokemonType(type) {
     }
 
     return icon;
-}
+} */
 
 // Primeres cartes 
 async function firstCards() {
     // Obté cartes de localStorage
     const pokemons = getFirstPokemon();
     if ( pokemons !== null ) {
-        ids_pokemons = pokemons;
+        starter_pokemon = pokemons;
     }
    
-    // console.log(ids_pokemons);
+    // console.log(starter_pokemon);
 
-    // Si ids_pokemons esta buit
-    if ( ids_pokemons.length === 0 ) {
+    // Si starter_pokemon esta buit
+    if ( starter_pokemon.length === 0 ) {
 
         // No para fins a tenir 10 números
-        while ( ids_pokemons.length < 10 ) {
+        while ( starter_pokemon.length < 10 ) {
             
             // Obté un id aleatori
             id = getRandomId(905);
@@ -447,18 +442,18 @@ async function firstCards() {
             //console.log(url_pokemon);
             
             // Si id no esta al array l'afegeix
-            if ( !ids_pokemons.includes(url_pokemon) && id != 0 && id !== null ) {
-                ids_pokemons.push(url_pokemon);
+            if ( !starter_pokemon.includes(url_pokemon) && id != 0 && id !== null ) {
+                starter_pokemon.push(url_pokemon);
             }
         }
 
         // Guarda les primeres cartes
-        saveFirstPokemon(ids_pokemons);
+        saveFirstPokemon(starter_pokemon);
     }
 
     loader('flex');
     
-    for (let id_pokemon of ids_pokemons) {
+    for (let id_pokemon of starter_pokemon) {
         // Obté les dades d'un pokemon
         const pkm = await getDataPokemon(id_pokemon);
 
@@ -489,10 +484,12 @@ function changeContextURL() {
 // Mostrar spinner
 // Status possibles -> Visible = 'flex'
 //                  -> Ocult = 'none'
+/*
 function loader(status) {
     const spinner = document.querySelector('.content-spinner');
     spinner.style.display = status;
 }
+*/
 
 // Pinta les cartes
 function printCardPokemon(html, name_class = "list-card-pokemon") {
@@ -520,8 +517,8 @@ async function backCardsPokemon(name_class = "list-card-pokemon") {
     list_original.style.display = 'none';
 
     // Si ja s'han seleccionat les primeres cartes
-    if ( ids_pokemons.length !== 0 ) {
-        for (let id_pokemon of ids_pokemons) {
+    if ( starter_pokemon.length !== 0 ) {
+        for (let id_pokemon of starter_pokemon) {
             const pkm = await getDataPokemon(id_pokemon);
             buildCardPokemon(pkm);
         }

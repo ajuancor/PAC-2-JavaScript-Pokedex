@@ -5,8 +5,99 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Combat</title>
-</head>
-<body>
     
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body id="main-body" class="">
+    <header class="">
+        <div class="container">
+            <div class="row">
+                <div class="d-flex align-self-center justify-content-center">
+                    <h1 class="text-center">POKÉDEX</h1>
+                    <div class="controls align-self-center">
+                        <div>
+                            <label for="dark_theme">Dark</label>
+                            <input type="radio" name="theme" id="dark_theme" value="dark" />
+                        </div>
+
+                        <div>
+                            <label for="light_theme">Light</label>
+                            <input type="radio" name="theme" id="light_theme" value="light" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-menu">
+            <div class="container">
+                <nav class="navbar-menu">
+                    <ul>
+                        <li>
+                            <a href="index.html" class="btn active">Home</a>
+                        </li>
+                        <li>
+                            <a href="combat.html" class="btn">Combat</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <section id="pokemon-list" class="container mb70">
+        <div class="content-spinner" style="display: none;">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="list-card-pokemon"></div>
+    </section>
+
+    <!-- TEMPLATE CARD -->
+    <template id="template-card-pkm">
+        <article class="card ocult-card" data-pokeid="">
+            <div class="content-card">
+                <h2 class="title card-title text-center"></h2>
+                
+                <!-- Img -->
+                <div class="content-img-card">
+                    <!-- Front img -->
+                    <div class="front pointer" onclick="changeCardImg(this); return false;">
+                        <img src="" class="img-card-pokemon" />
+                    </div>
+                    
+                    <!-- Back img -->
+                    <div class="back pointer" onclick="changeCardImg(this); return false;" style="display: none;">
+                        <img src="" class="img-card-pokemon" />
+                    </div>
+                </div>
+                
+                <!-- Content text -->
+                <div class="content-text-card mt10">
+                    <ul>
+                        <li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon"></span></li>
+                        <li><span>Atac</span> <span class="stat-attack"></span></li>
+                        <li><span>Defensa</span> <span class="stat-defense"></span></li>
+                    </ul>
+                </div>
+                
+                <!-- More info -->
+                <div class="content-more-info text-center">
+                    <button class="btn btn-more-info">Més informació</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <footer class="main-footer">
+        <section class="container">
+            <div class="text-center">
+                <span>Copyright 2022 - Albert Juan Cortina "Juandale8"</span>
+            </div>
+        </section>
+    </footer>
+
+    <script defer src="assets/js/theme.js"></script>
+    <script defer type='module' src="assets/js/battle.js"></script>
 </body>
 </html>

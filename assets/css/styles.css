@@ -365,7 +365,7 @@ img {
     justify-content: center;
 }
 
-/* -- Individual card  -- */
+/* -- Individual card -- */
 .card .imgs-pokemon {
     display: inline-flex;
     justify-content: space-around;
@@ -375,6 +375,15 @@ img {
 .card .shiny-pokemon {
     display: flex;
     gap: 15px;
+}
+
+/* -- Ocult card -- */
+.card.ocult-card {
+    background-color: #ced4da;
+}
+
+.card.ocult-card .content-card {
+    visibility: hidden;
 }
 
 /* - Imatges - */
