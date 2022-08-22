@@ -5,6 +5,7 @@ var ids_pokemons = [];
 var id;
 var no_cards = false;
 let data_pokemon = {};
+var working = false;
 
 /*
 window.history.pushState = new Proxy(window.history.pushState, {
@@ -42,8 +43,8 @@ function checkPokeParams() {
 }
 
 // Controller
-let controller = new AbortController();
-let signal = controller.signal;
+//let controller = new AbortController();
+//let signal = controller.signal;
 var controllerTime = "";
 
 // Buscador de pokemons
@@ -96,12 +97,14 @@ async function getAllPokemon() {
             
             // Buscador
             const text_search = form_pokemon.value.toLowerCase();
+            working = true;
             let exit_search = false;
             
             for( let pokemon of data_pokemon.results ) {
                 
-                if ( pokemon.name.indexOf(text_search) === 0 /* && working */ ) {
-                    console.log(text_search);
+                if ( pokemon.name.indexOf(text_search) === 0 && working ) {
+                    //console.log(text_search);
+                    
                     const pkm = await getDataPokemon(pokemon.url);
                     buildCardPokemon(pkm);
 
@@ -111,7 +114,7 @@ async function getAllPokemon() {
                 }
             }
 
-            //working = false;
+            working = false;
 
             if ( !exit_search ) {
                 no_cards = true;
@@ -128,6 +131,8 @@ async function getAllPokemon() {
             }
 
             else {
+                if ( working ) { working = false; }
+
                 // Cartes Originals
                 backCardsPokemon();
                 loader('none');
@@ -187,7 +192,7 @@ async function getDetailPokemon() {
         const pkm = await getDataPokemon(url_pokemon);
         buildCardPokemon(pkm);
     } catch (error) {
-        printCardPokemon('');
+        buildCardPokemon('');
     }
 }
 

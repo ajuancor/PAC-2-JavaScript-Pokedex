@@ -1,3 +1,7 @@
+// Controller
+let controller = new AbortController();
+let signal = controller.signal;
+
 const isResponseOk = async (response) => {
     if (!response.ok)
         throw new Error(response.status);
@@ -14,11 +18,12 @@ export async function getDataAllPokemon(offset = 0, limit = 905) {
         .then((response) => {
             const data = response
             return data;
-        });
+        })
+        .catch(err => console.error("ERROR: ", err.message));
 }
 
 export async function getDataPokemon(url) {
-    return fetch(url)
+    return fetch(url, { signal: controller.signal })
 		.then((res) => res.json())
 		.then((response) => {
 			const data = response
@@ -29,4 +34,15 @@ export async function getDataPokemon(url) {
 			}) */
 			return data;
 		})
+        .catch(err => { 
+            console.error("ERROR: ", err.message) 
+            return '';
+        });
 }
+
+/*
+export async function abortRequest() {
+    signal.addEventListener('abort', () => console.log("abort!"));
+    console.log("abort");
+}
+*/
