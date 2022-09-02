@@ -185,9 +185,21 @@ async function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
     try {
         const pkm = await getDataPokemon(url_pokemon);
-        buildCardPokemon(pkm);
+        if ( pkm !== '' ) {
+            buildCardPokemon(pkm);
+        } else {
+            buildCardPokemon('');
+            
+            setTimeout( function() {
+                location.href = "/index.html";
+            }, 1500);
+        }
     } catch (error) {
         buildCardPokemon('');
+        
+        setTimeout( function() {
+            location.href = "/index.html";
+        }, 1500);
     }
 }
 

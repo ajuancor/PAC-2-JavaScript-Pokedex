@@ -158,7 +158,7 @@ function buildCardPokemon(pokemon) {
     template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
 
     // MORE INFO
-    template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+');');
+    //template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+');');
     
     /*template.querySelector('.btn-more-info').setAttribute('id', 'pokemon-more-'+pokemon.id);
     const btn_more = template.querySelector('#pokemon-more-'+pokemon.id);
