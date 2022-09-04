@@ -8,13 +8,22 @@ getStarterPokemon();
 loopStarterPokemon();
 
 // Listeners
-const select_pokemon = document.querySelector('.list-card-pokemon');
+let select_pokemon = document.querySelector('.list-card-pokemon');
+select_pokemon.addEventListener('click', listenerPokemonCard);
+/*
 select_pokemon.addEventListener('click', function(card) {
     //console.log(card.target.dataset.pokeid);
-    
     selectPokemon(card);
-    
 });
+*/
+
+function listenerPokemonCard(card) {
+    selectPokemon(card);
+}
+
+function removeListenerPokemonCard() {
+    select_pokemon.removeEventListener('click', listenerPokemonCard);
+}
 
 // Obté 10 pokemons aleatoris
 function getStarterPokemon() {
@@ -62,7 +71,6 @@ async function selectPokemon(card) {
 
     if ( pkm !== '' ) {
         if ( first_pokemon.length === 0 ) {
-            console.log('first');
             first_pokemon = pkm;
             
             card.target.classList.remove('ocult-card');
@@ -94,32 +102,42 @@ function battleCards() {
     let html = '';
 
     if ( first_pokemon.length !== 0 && second_pokemon.length !== 0 ) {
-        
+        const name_first_pokemon = first_pokemon.name.charAt(0).toUpperCase() + first_pokemon.name.slice(1);
+        const name_second_pokemon = second_pokemon.name.charAt(0).toUpperCase() + second_pokemon.name.slice(1);
+
         // Si el primer pokemon té més atac i el segon té menys defensa
         if ( first_pokemon.stats[1].base_stat > second_pokemon.stats[2].base_stat ) {
-            html = "<h1>"+ first_pokemon.name +" ataca i guanya a "+ second_pokemon.name +"</h1>";
-            console.log('entro');
+            html = "<h1>"+ name_first_pokemon +" ataca i guanya a "+ name_second_pokemon +"</h1>";
         } else if ( first_pokemon.stats[1].base_stat <= second_pokemon.stats[2].base_stat) {
-            html = "<h1>"+ first_pokemon.name +" ataca i perd contra "+ second_pokemon.name +"</h1>";
+            html = "<h1>"+ name_first_pokemon +" ataca i perd contra "+ name_second_pokemon +"</h1>";
         } else {
             html = "<h1>No hi ha guanyadors</h1>";
         }
 
+        // FINISH BATTLE
         battle.innerHTML = html;
-    }
+        battle.parentElement.style.display = 'block';
 
+        select_pokemon.classList.remove('selected-cards');
+        
+        // Elimina els listener per a que l'usuari no pugui triar més cartes
+        removeListenerPokemonCard();
+
+    }
 }
  
 function buildCardPokemon(pokemon) {
     const template = document.querySelector('#template-card-pkm').content;
     const fragment = document.createDocumentFragment();
 
+    const name_pokemon = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+
     // ID
     const pokeid = template.querySelector('.card');
     pokeid.dataset.pokeid = pokemon.id;
 
     // TITLE
-    template.querySelector('.card-title').innerHTML = pokemon.name;
+    template.querySelector('.card-title').innerHTML = name_pokemon;
 
     // IMAGES
     // Front
@@ -128,7 +146,7 @@ function buildCardPokemon(pokemon) {
     } else {
         template.querySelector('.front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
     }
-    template.querySelector('.front .img-card-pokemon').setAttribute('alt', pokemon.name);
+    template.querySelector('.front .img-card-pokemon').setAttribute('alt', name_pokemon);
 
     // Back
     if ( pokemon.sprites.back_default != null ) {
@@ -136,7 +154,7 @@ function buildCardPokemon(pokemon) {
     } else {
         template.querySelector('.back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
     }
-    template.querySelector('.back .img-card-pokemon').setAttribute('alt', pokemon.name);
+    template.querySelector('.back .img-card-pokemon').setAttribute('alt', name_pokemon);
 
     //template.querySelector('.card-image').setAttribute('src', gif.url);
     //template.querySelector('.card-image').setAttribute('alt', gif.title);
