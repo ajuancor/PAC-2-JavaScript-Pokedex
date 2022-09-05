@@ -45,25 +45,6 @@ body.dark {
     margin-left: auto;
 }
 
-.row {
-    --bs-gutter-x: 1.5rem;
-    --bs-gutter-y: 0;
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: calc(-1 * var(--bs-gutter-y));
-    margin-right: calc(-.5 * var(--bs-gutter-x));
-    margin-left: calc(-.5 * var(--bs-gutter-x));
-}
-
-.row>* {
-    flex-shrink: 0;
-    width: 100%;
-    max-width: 100%;
-    padding-right: calc(var(--bs-gutter-x) * .5);
-    padding-left: calc(var(--bs-gutter-x) * .5);
-    margin-top: var(--bs-gutter-y);
-}
-
 @media (min-width: 576px) {
     .container {
         max-width: 540px;
@@ -85,6 +66,47 @@ body.dark {
 @media (min-width: 1200px) {
     .container {
         max-width: 1140px;
+    }
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-.5 * var(--bs-gutter-x));
+    margin-left: calc(-.5 * var(--bs-gutter-x));
+}
+
+.row>* {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    margin-top: var(--bs-gutter-y);
+}
+
+.col-12 {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.col-6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+@media (min-width: 768px) {
+    .col-md-12 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .col-md-6 {
+        flex: 0 0 auto;
+        width: 50%;
     }
 }
 
@@ -368,6 +390,25 @@ img {
     grid-template-columns: repeat(4, 1fr);
 }
 
+@media (max-width: 992px) {
+    .list-card-pokemon {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .list-card-pokemon {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 470px) {
+    .list-card-pokemon {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+
 /* Battle - Cards list */
 .list-card-pokemon.selected-cards .ocult-card {
     cursor: pointer;
@@ -496,15 +537,54 @@ img {
 }
 
 /* -- Individual card -- */
+/*
 .card .imgs-pokemon {
     display: inline-flex;
     justify-content: space-around;
 }
+*/
 
 .card .default-pokemon,
 .card .shiny-pokemon {
     display: flex;
     gap: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.card .description-pokemon {
+    margin-bottom: 1.5em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    font-size: 1rem;
+}
+
+.card .types-pokemon {
+    margin-bottom: 2em;
+}
+
+.card .types-pokemon li {
+    justify-content: center;
+}
+
+.card .stats-pokemon {
+    justify-content: flex-start;
+    margin-bottom: 0.8em;
+}
+
+.card .stats-pokemon ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 33.3%;
+    padding: 0;
+}
+
+.card .stats-pokemon ul li {
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 5px;
 }
 
 /* -- Ocult card -- */

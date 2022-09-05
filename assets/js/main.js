@@ -184,8 +184,17 @@ function getDataPokemon(url) {
 async function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
     try {
-        const pkm = await getDataPokemon(url_pokemon);
+        let pkm = await getDataPokemon(url_pokemon);
         if ( pkm !== '' ) {
+            const url_pokemon_species = 'https://pokeapi.co/api/v2/pokemon-species/' + pokeParam;
+        
+            const pkm_specie = await getDataPokemon(url_pokemon_species);
+            if ( pkm_specie !== '' ) {
+                pkm['more_info'] = pkm_specie;
+            }
+        
+            console.log(pkm);
+
             buildCardPokemon(pkm);
         } else {
             buildCardPokemon('');
@@ -253,6 +262,34 @@ function buildCardPokemon(pokemon) {
         }
         template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('alt', pokemon.name);
 
+        // DESCRIPTION
+        let text_description = '';
+
+        // Busquem description en espanyol
+        pokemon.more_info.flavor_text_entries.forEach( function(value, index, array) {
+            if (value.language.name == 'es') {
+                //console.dir(value);
+                if (value.version.name == 'red') {
+                    text_description = value.flavor_text;
+                }
+
+                else if (value.version.name == 'sword' ) {
+                    text_description = value.flavor_text;
+                }
+
+                else {
+                    if (text_description == '') {
+                        text_description = pokemon.more_info.flavor_text_entries[index].flavor_text;
+                    }
+                }
+            }
+        });
+
+        // Apliquem la description a la carta
+        const description = template.querySelector('.description-pokemon');
+        if (text_description != '') {
+            description.innerHTML = '<p>' + text_description + '</p>';
+        }
 
         // STATS
         // Types
@@ -268,9 +305,13 @@ function buildCardPokemon(pokemon) {
             }
         }
 
-        // Attack & Defense        
+        // Stats
+        template.querySelector('.stat-hp').innerHTML = pokemon.stats[0].base_stat;
         template.querySelector('.stat-attack').innerHTML = pokemon.stats[1].base_stat;
         template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
+        template.querySelector('.stat-attack-special').innerHTML = pokemon.stats[3].base_stat;
+        template.querySelector('.stat-defense-special').innerHTML = pokemon.stats[4].base_stat;
+        template.querySelector('.stat-speed').innerHTML = pokemon.stats[5].base_stat;
 
         const clone = template.cloneNode(true);
 		fragment.appendChild(clone);
