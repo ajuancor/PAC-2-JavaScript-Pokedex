@@ -583,4 +583,4 @@ async function backCardsPokemon(name_class = "list-card-pokemon") {
 
 }
 
-// Hola i adeu
+//aqui estem barallant-nos
