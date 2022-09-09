@@ -7,19 +7,6 @@ var no_cards = false;
 let data_pokemon = {};
 var working = false;
 
-/*
-window.history.pushState = new Proxy(window.history.pushState, {
-    apply: (target, thisArg, argArray) => {
-      // trigger here what you need
-      // Comprova els parametres de la URL
-        //pokeParam = checkURLParams();
-        changeContextURL();
-      return target.apply(thisArg, argArray);
-    },
-    
-  });
-  */
-
 // Variable dedicada a un pokemon individual
 var pokemon_id = false;
 
@@ -47,12 +34,18 @@ function checkPokeParams() {
 //let signal = controller.signal;
 var controllerTime = "";
 
+// Reiniciar pokemons inicials
+const restart_starters_pokemon = document.querySelector('#btn-restart-starters');
+
 // Buscador de pokemons
 const form_pokemon = document.querySelector('#search-pokemon');
 const button_pokemon = document.querySelector('#btn-search-pokemon');
 
 
 /* LISTENERS */
+// Crea un listener per reiniciar les cartes inicials
+restart_starters_pokemon.addEventListener('click', restartFirstCards);
+
 // Al escriure el nom d'un pokemon
 form_pokemon.addEventListener('keyup', getTextSearcher);
 
@@ -408,70 +401,6 @@ function backToOriginalList() {
     backCardsPokemon('detail-card-pokemon');
 }
 
-/*
-function selectPokemonType(type) {
-    let icon = '';
-    switch (type) {
-        case 'normal':
-        default:
-            icon = '<img src="assets/img/icons/icon_normal.webp" class="img-type-pokemon" alt="Normal" title="Normal" />';
-            break;
-        case 'fighting':
-            icon = '<img src="assets/img/icons/icon_lucha.webp" class="img-type-pokemon" alt="Lluita" title="Lluita" />';
-            break;
-        case 'flying':
-            icon = '<img src="assets/img/icons/icon_volador.webp" class="img-type-pokemon" alt="Volador" title="Volador" />';
-            break;
-        case 'poison':
-            icon = '<img src="assets/img/icons/icon_veneno.webp" class="img-type-pokemon" alt="Verí" title="Verí" />';
-            break;
-        case 'ground':
-            icon = '<img src="assets/img/icons/icon_tierra.webp" class="img-type-pokemon" alt="Terra" title="Terra" />';
-            break;
-        case 'rock':
-            icon = '<img src="assets/img/icons/icon_roca.webp" class="img-type-pokemon" alt="Roca" title="Roca" />';
-            break;
-        case 'bug':
-            icon = '<img src="assets/img/icons/icon_bicho.webp" class="img-type-pokemon" alt="Bicho" title="Bicho" />';
-            break;
-        case 'ghost':
-            icon = '<img src="assets/img/icons/icon_fantasma.webp" class="img-type-pokemon" alt="Fantasma" title="Fantasma" />';
-            break;
-        case 'steel':
-            icon = '<img src="assets/img/icons/icon_acero.webp" class="img-type-pokemon" alt="Acero" title="Acero" />';
-            break;
-        case 'fire':
-            icon = '<img src="assets/img/icons/icon_fuego.webp" class="img-type-pokemon" alt="Fuego" title="Fuego" />';
-            break;
-        case 'water':
-            icon = '<img src="assets/img/icons/icon_agua.webp" class="img-type-pokemon" alt="Agua" title="Agua" />';
-            break;
-        case 'grass':
-            icon = '<img src="assets/img/icons/icon_planta.webp" class="img-type-pokemon" alt="Planta" title="Planta" />';
-            break;
-        case 'electric':
-            icon = '<img src="assets/img/icons/icon_electrico.webp" class="img-type-pokemon" alt="Electric" title="Electric" />';
-            break;
-        case 'psychic':
-            icon = '<img src="assets/img/icons/icon_psiquico.webp" class="img-type-pokemon" alt="Psiquic" title="Psiquic" />';
-            break;
-        case 'ice':
-            icon = '<img src="assets/img/icons/icon_hielo.webp" class="img-type-pokemon" alt="Gel" title="Gel" />';
-            break;
-        case 'dragon':
-            icon = '<img src="assets/img/icons/icon_dragon.webp" class="img-type-pokemon" alt="Dragon" title="Dragon" />';
-            break;
-        case 'dark':
-            icon = '<img src="assets/img/icons/icon_siniestro.webp" class="img-type-pokemon" alt="Siniestro" title="Siniestro" />';
-            break;
-        case 'fairy':
-            icon = '<img src="assets/img/icons/icon_hada.webp" class="img-type-pokemon" alt="Fada" title="Fada" />';
-            break;
-    }
-
-    return icon;
-} */
-
 // Primeres cartes 
 async function firstCards() {
     // Obté cartes de localStorage
@@ -517,6 +446,21 @@ async function firstCards() {
     loader('none');
 }
 
+// Reinicia les cartes inicials
+function restartFirstCards() {
+    // Esborra els pokemons guardats al localStorage
+    deleteFirstPokemon();
+
+    // Neteja el template
+    clearCardsPokemon();
+
+    // Buida els pokemons d'aquesta array
+    starter_pokemon = [];
+
+    // Torna a seleccionar pokemons
+    firstCards();
+}
+
 // Canvi de dades al canviar l'URL
 /*
 function changeContextURL() {
@@ -544,19 +488,6 @@ function loader(status) {
 }
 */
 
-// Pinta les cartes
-function printCardPokemon(html, name_class = "list-card-pokemon") {
-    const list = document.querySelector("#pokemon-list ."+name_class);
-    //list.innerHTML += html;
-    list.append(html);
-}
-
-// Neteja les cartes
-function clearCardsPokemon(name_class = "list-card-pokemon") {
-    const list = document.querySelector("#pokemon-list ."+name_class);
-    list.innerHTML = '';
-}
-
 // Torna a les cartes del inici
 async function backCardsPokemon(name_class = "list-card-pokemon") {
     clearCardsPokemon(name_class);
@@ -580,7 +511,17 @@ async function backCardsPokemon(name_class = "list-card-pokemon") {
     else {
         firstCards();
     }
-
 }
 
-// Hola i adeu
+// Pinta les cartes
+function printCardPokemon(html, name_class = "list-card-pokemon") {
+    const list = document.querySelector("#pokemon-list ."+name_class);
+    //list.innerHTML += html;
+    list.append(html);
+}
+
+// Neteja les cartes
+function clearCardsPokemon(name_class = "list-card-pokemon") {
+    const list = document.querySelector("#pokemon-list ."+name_class);
+    list.innerHTML = '';
+}

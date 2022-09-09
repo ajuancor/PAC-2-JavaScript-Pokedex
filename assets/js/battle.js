@@ -9,13 +9,18 @@ loopStarterPokemon();
 
 // Listeners
 let select_pokemon = document.querySelector('.list-card-pokemon');
-select_pokemon.addEventListener('click', listenerPokemonCard);
+//select_pokemon.addEventListener('click', listenerPokemonCard);
+
 /*
 select_pokemon.addEventListener('click', function(card) {
     //console.log(card.target.dataset.pokeid);
     selectPokemon(card);
 });
 */
+
+function createListenerPokemonCard() {
+    select_pokemon.addEventListener('click', listenerPokemonCard);
+}
 
 function listenerPokemonCard(card) {
     selectPokemon(card);
@@ -59,6 +64,9 @@ async function loopStarterPokemon() {
         }
 
         loader('none');
+
+        // Crear el listener per seleccionar cartes
+        createListenerPokemonCard();
     }
 }
 
@@ -123,6 +131,8 @@ function battleCards() {
         // Elimina els listener per a que l'usuari no pugui triar més cartes
         removeListenerPokemonCard();
 
+        // Es mou fins al resultat final
+        goToDetailBattle();
     }
 }
  
@@ -195,4 +205,10 @@ function printCardPokemon(html, name_class = "list-card-pokemon") {
     const list = document.querySelector("#pokemon-list ."+name_class);
     //list.innerHTML += html;
     list.append(html);
+}
+
+function goToDetailBattle() {
+    var detail_battle = document.getElementById("battle-detail");
+
+    detail_battle.scrollIntoView({block: "start", behavior: "smooth"});
 }

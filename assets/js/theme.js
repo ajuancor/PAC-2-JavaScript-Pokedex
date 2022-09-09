@@ -56,6 +56,10 @@ async function saveFirstPokemon(ids_pokemons) {
     window.localStorage.setItem('pokemons', JSON.stringify(ids_pokemons));
 }
 
+async function deleteFirstPokemon() {
+    window.localStorage.removeItem('pokemons');
+}
+
 /* RANDOM ID's */
 // Genera número aleatori
 function getRandomId(max) {
@@ -101,6 +105,15 @@ function changeURL(id) {
 // Status possibles -> Visible = 'flex'
 //                  -> Ocult = 'none'
 function loader(status) {
+    const buttons = document.querySelector('button');
+    
+    // Deshabilitem o habilitem tots els botons de la pàgina
+    if (status === 'flex') {
+        buttons.disabled = true;
+    } else {
+        buttons.disabled = false;
+    }
+
     const spinner = document.querySelector('.content-spinner');
     spinner.style.display = status;
 }
