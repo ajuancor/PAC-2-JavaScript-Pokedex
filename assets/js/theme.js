@@ -193,3 +193,19 @@ function changeCardImg(card) {
         card.previousElementSibling.style.display = 'block';
     }
 }
+
+/* Footer */
+// Serveix per si ha de forçar el footer al final de la pàgina o no
+function addFooterBottom(bottom_position) {
+    const footer = document.querySelector('.main-footer');
+
+    if ( bottom_position ) {
+        if ( ! footer.classList.contains('bottom-position') ) { 
+            footer.classList.add('bottom-position');
+        }
+    } else {
+        if ( footer.classList.contains('bottom-position') ) { 
+            footer.classList.remove('bottom-position');
+        }
+    }
+}

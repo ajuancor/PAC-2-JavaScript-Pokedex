@@ -79,6 +79,7 @@ function getTextSearcher() {
 async function getAllPokemon() {
     if ( Object.entries(data_pokemon).length !== 0 ) {
         
+        // Formulari per buscar
         if ( form_pokemon.value != '' ) {
            
             clearCardsPokemon();
@@ -309,8 +310,10 @@ function buildCardPokemon(pokemon) {
         const clone = template.cloneNode(true);
 		fragment.appendChild(clone);
 
-
         printCardPokemon(fragment,'detail-card-pokemon');
+
+        // Aquest funció serveix perquè el footer es mantingui a la part final de la pàgina
+        addFooterBottom(false);
     }
 
     else if ( pokemon != '' && !no_cards ) {
@@ -376,15 +379,24 @@ function buildCardPokemon(pokemon) {
 		fragment.appendChild(clone);
 
         printCardPokemon(fragment);
+
+        // Aquest funció serveix perquè el footer es mantingui a la part final de la pàgina
+        addFooterBottom(false);
     }
 
     else {
         var msg = "No s'han trobat resultats";
         var html = document.createElement('div');
         html.innerHTML = msg;
+        html.classList.add('error-message');
         
-        console.log(html);
+        const list_error = document.querySelector("#pokemon-list .list-card-pokemon");
+        list_error.classList.add('error-list');
+
         printCardPokemon(html);
+
+        // Aquest funció serveix perquè el footer es mantingui a la part final de la pàgina
+        addFooterBottom(true);
 
         setTimeout(no_cards = false, 500);
     }
@@ -524,4 +536,13 @@ function printCardPokemon(html, name_class = "list-card-pokemon") {
 function clearCardsPokemon(name_class = "list-card-pokemon") {
     const list = document.querySelector("#pokemon-list ."+name_class);
     list.innerHTML = '';
+    
+    if ( name_class == "list-card-pokemon" ) {
+        // Elimina la classe dissenyada per mostrar el contingut dels no resultat o errors
+        if ( list.classList.contains('error-list') ) {
+            list.classList.remove('error-list')
+        }
+    }
+
+
 }
