@@ -138,42 +138,6 @@ async function getAllPokemon() {
 
 }
 
-/* PART DATA-PROMISES */
-/*
-const isResponseOk = async (response) => {
-    if (!response.ok)
-        throw new Error(response.status);
-        
-    return await response.json();
-}
-
-function getDataAllPokemon() {
-    fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=905')
-    .then(response => isResponseOk(response))
-    .then(data => {
-        //console.log(data);
-        data_pokemon = data;
-        getAllPokemon();
-    })
-    .catch(err => console.error("ERROR: ", err.message));
-}
-
-function getDataPokemon(url) {
-    fetch(url, { signal: controller.signal })
-    .then(response => isResponseOk(response))
-    .then(data => {
-        console.log(data);
-        buildCardPokemon(data);
-    })
-    .catch(err => {
-        if ( pokemon_id ) {
-            buildCardPokemon('');
-        }  
-        console.error("ERROR: ", err.message);
-    });
-}
-*/
-
 // Fa una crida individual
 async function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
@@ -369,12 +333,6 @@ function buildCardPokemon(pokemon) {
         // MORE INFO
         template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+');');
         
-        /*template.querySelector('.btn-more-info').setAttribute('id', 'pokemon-more-'+pokemon.id);
-        const btn_more = template.querySelector('#pokemon-more-'+pokemon.id);
-        btn_more.addEventListener('click', function(){
-            alert('hola');
-        });*/
-
         const clone = template.cloneNode(true);
 		fragment.appendChild(clone);
 
@@ -543,6 +501,4 @@ function clearCardsPokemon(name_class = "list-card-pokemon") {
             list.classList.remove('error-list')
         }
     }
-
-
 }
