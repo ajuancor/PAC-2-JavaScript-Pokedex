@@ -138,6 +138,8 @@ async function getAllPokemon() {
 
 }
 
+// Hola
+
 // Fa una crida individual
 async function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
