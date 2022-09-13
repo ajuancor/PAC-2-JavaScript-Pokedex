@@ -489,7 +489,14 @@ img {
 /* - Buttons  - */
 /* -- Home -- */
 .btn-restart-starter {
-    background: #ced;
+    background: rgb(255, 255, 255);
+    border-color: rgb(112, 143, 214);
+    border-width: 10%;
+    box-shadow: inset 0 0 0 1px rgb(65, 104, 196) ;
+    border-radius: 10px;
+    display: flex;
+    gap: ;
+    
 }
 
 .button_search {
@@ -684,8 +691,13 @@ img {
 }
 
 .header {
-    background-image: url(img/parte-juego-pokemon-verde_4262.jpg);
-    background-repeat: no-repeat;
+    background-image: url(img/arboles.jpg);
+    background-repeat: repeat;
     background-attachment: fixed ;
-    background-clip: ;
+    
+}
+
+.iconbtn{
+    width: 17%;
+    margin: 2%
 }
