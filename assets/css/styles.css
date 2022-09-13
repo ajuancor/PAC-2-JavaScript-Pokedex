@@ -240,6 +240,22 @@ img {
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
+/* Main Title */
+.main-title {
+    text-align: center;
+    font-size: 3.5em;
+}
+
+.light .main-title {
+    color: var(--light-background);
+    text-shadow: 2px 2px 2px var(--light-color);
+}
+
+.dark .main-title {
+    color: var(--dark-background);
+    text-shadow: 2px 2px 2px var(--dark-color);
+}
+
 /* Main Menu */
 .main-menu {
     background: #fff5ac; /* #fff5ac */
@@ -437,6 +453,37 @@ img {
 .controls {
     position: absolute;
     right: 30px;
+    font-size: 1rem;
+}
+
+.controls .content-control {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 20px;
+}
+
+.controls .content-control input[type="radio"] {
+    margin-top: 0px;
+}
+
+.light .controls .content-control {
+    background: rgb(255 255 255 / 50%);
+}
+
+.light .controls label {
+    color: var(--dark-background);
+    text-shadow: 2px 2px 2px var(--dark-color);
+}
+
+.dark .controls .content-control {
+    background: rgb(0 0 0 / 50%);
+}
+
+.dark .controls label {
+    color: var(--light-background);
+    text-shadow: 2px 2px 2px var(--light-color);
 }
 
 /* - Home - Buscador - */
