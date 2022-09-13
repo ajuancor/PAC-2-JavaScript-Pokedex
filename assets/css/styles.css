@@ -682,3 +682,10 @@ img {
 .detail-battle h1 {
     font-size: 2.5em;
 }
+
+.header {
+    background-image: url(img/parte-juego-pokemon-verde_4262.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed ;
+    background-clip: ;
+}
