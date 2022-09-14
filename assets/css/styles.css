@@ -494,7 +494,6 @@ img {
 
 /* - Home - Restart - */
 .restart-starters {
-    display: flex;
     margin: 1.8rem;
 }
 
@@ -536,7 +535,7 @@ img {
 
 /* - Buttons  - */
 /* -- Home -- */
-.btn-restart-starter {
+.btn-retrostyle {
     background: rgb(255, 255, 255);
     border-color: rgb(112, 170, 214);
     border-width: 10%;
@@ -548,39 +547,44 @@ img {
     color: rgb(4, 4, 175);
 }
 
-.button_search {
-    background: #ced4da;
+.iconbtn{
+    width: 1rem;
 }
 
-.btn-more-info {
-    background: #ced4da;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    border: 1px solid #000;
-}
+/*  .button_search {
+    background: #ced4da  ;
+}  */
 
-.btn-back-list {
-    background: #ced4da;
-}
 
-.button_search:hover,
+
+/*.btn-back-list {
+    background: #ced4da;
+}*/
+
+/*.button_search:hover,
 .btn-more-info:hover,
 .btn-back-list:hover {
     background: #000;
     color: #fff;
 }
-
-/* -- Battle -- */
+*/
+/* ------- Battle ------ */
+/*
 .btn-repeat-battle {
     background: #ced4da;
     /* margin-top: 1rem; */
-    /* margin-bottom: 0.5rem; */
+    /* margin-bottom: 0.5rem; 
     border: 1px solid #000;
 }
-
+*/
+/*
 .btn-repeat-battle:hover {
     background: #000;
     color: #fff;
+} */
+
+.iconbtn{
+    width: 1rem;
 }
 
 /* - Carta - */
@@ -739,14 +743,10 @@ img {
     font-size: 2.5em;
 }
 
-.header {
+header {
     background-image: url(img/arboles.jpg);
     background-repeat: repeat;
     background-attachment: fixed ;
     
 }
 
-.iconbtn{
-    width: 17%;
-    margin: 2%
-}
