@@ -1,4 +1,6 @@
 /*** STYLES CSS  ***/
+@font-face { font-family: myFirstFont; src: url("/assets/css/img/SHPinscher-Regular.otf"); }
+
 :root {
     --light-background: #f2f2f2;
     --light-color: #0013a5;
@@ -16,6 +18,7 @@
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+    font-family: myFirstFont;
 }
 
 html, body {
@@ -46,7 +49,7 @@ body.dark {
     margin-right: auto;
     margin-left: auto;
 }
-@font-face { font-family: myFirstFont; src: url("/assets/css/img/SHPinscher-Regular.otf"); } * { font-family: myFirstFont; } 
+
 
 @media (min-width: 576px) {
     .container {
@@ -381,6 +384,10 @@ img {
     color: var(--dark-color);
 }
 
+.main-footer .copyright {
+    font-size: 18px;
+}
+
 
 /* - Spinner - */
 .content-spinner {
@@ -546,9 +553,10 @@ img {
     justify-content: space-between;
     align-items: center;
     color: rgb(4, 4, 175);
+    gap: 5px
 }
 
-.iconbtn{
+.iconbtn {
     width: 1rem;
 }
 
@@ -606,6 +614,7 @@ img {
     justify-content: center;
     min-height: 50px;
     align-items: center;
+    font-size: 1.8rem;
     margin-top: 0; /* 0.5em */
     margin-bottom: 0.2em; /* 0.5em */
     text-transform: capitalize;
@@ -624,6 +633,15 @@ img {
     justify-content: space-between;
     font-size: 1.4rem;
     margin-bottom: 5px;
+}
+
+.card .content-text-card ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.9rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 90%);
 }
 
 .card .content-types-pokemon {
@@ -673,7 +691,8 @@ img {
 
 .card .stats-pokemon {
     justify-content: flex-start;
-    margin-bottom: 0.8em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .card .stats-pokemon ul {
@@ -743,6 +762,14 @@ img {
 
 .detail-battle h1 {
     font-size: 2.5em;
+}
+
+.detail-card-pokemon .imgs-pokemon {
+    height: 100%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: center;
 }
 
 header {
