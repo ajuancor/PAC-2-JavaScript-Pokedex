@@ -35,11 +35,13 @@ body {
 /* -- Light Body --  */
 body.light {
     background: url(/assets/css/img/background\ prueba\ 4.jpg);
+    background-attachment: fixed;
 
 }
 /* -- Dark Body --  */
 body.dark {
     background: url(/assets/css/img/background\ prueba\ 2.png);
+    background-attachment: fixed;
 }
 
 .container {    
@@ -452,6 +454,7 @@ img {
 }
 
 
+
 /* Battle - Cards list */
 .list-card-pokemon.selected-cards .ocult-card {
     cursor: pointer;
@@ -604,9 +607,16 @@ img {
     overflow: hidden;
     padding: 1em;
     margin: 1em;
-    background: linear-gradient(0deg, #fff5ac, rgb(255 245 172 / 30%), rgb(255 245 172 / 30%), #fff5ac);
-    border: 4px solid rgb(255 226 101 / 90%);
+    border: 4px solid rgb(7, 114, 1 / 90%);
     border-radius: 0.75rem;
+}
+.light .card{
+    background: linear-gradient(0deg, rgb(86, 157, 82), rgba(138, 235, 78, 90%), rgb(86, 157, 82));
+    
+}
+.dark .card{
+    background: linear-gradient(0deg, rgb(35, 35, 35), rgba(90, 90, 90, 50), rgb(35, 35, 35));
+    
 }
 
 .card .title {
@@ -620,12 +630,18 @@ img {
     text-transform: capitalize;
 }
 
+.dark .card .title{
+    color: #ced4da;
+    text-decoration: underline;
+}
+
 .card ul {
     list-style: none;
     margin: 0;
     padding-inline-start: 0px;
     padding-left: 0.75em;
     padding-right: 0.75em;
+    
 }
 
 .card ul li { 
@@ -633,6 +649,7 @@ img {
     justify-content: space-between;
     font-size: 1.4rem;
     margin-bottom: 5px;
+    
 }
 
 .card .content-text-card ul {
@@ -655,6 +672,7 @@ img {
     height: 100%;
     align-items: flex-end;
     justify-content: center;
+    
 }
 
 /* -- Individual card -- */
