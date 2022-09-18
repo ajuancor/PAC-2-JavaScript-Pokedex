@@ -259,10 +259,21 @@ img {
     text-shadow: 2px 2px 2px #f3f3f3;
 }
 
-/* Main Menu */
+/* Heade & Main Menu */
+header {
+    background-image: url(img/arboles.jpg);
+    background-repeat: repeat;
+    background-attachment: fixed ;
+}
+
+.content-header {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+}
+
 .main-menu {
     background: #fff5ac; /* #fff5ac */
-    
 }
 
 .navbar-menu {
@@ -357,6 +368,12 @@ img {
 
 .dark .navbar-menu .btn.active {
     color: #f3f3f3;
+}
+
+@media (max-width: 576px) {
+    .content-header {
+        flex-direction: column;
+    }
 }
 
 /* - Main Footer - */
@@ -454,7 +471,6 @@ img {
 }
 
 
-
 /* Battle - Cards list */
 .list-card-pokemon.selected-cards .ocult-card {
     cursor: pointer;
@@ -495,6 +511,15 @@ img {
 .dark .controls label {
     color: var(--light-background);
     text-shadow: 2px 2px 2px var(--light-color);
+}
+
+@media (max-width: 576px) {
+    .controls {
+        position: relative;
+        display: flex;
+        right: 0;
+        gap: 15px;
+    }
 }
 
 /* - Home - Buscador - */
@@ -765,6 +790,7 @@ img {
 .img-card-pokemon {
     width: 120px;
     height: 120px;
+    margin: 0 auto;
 }
 
 .img-type-pokemon {
@@ -778,6 +804,16 @@ img {
         justify-content: center;
         margin-left: 1.5em;
         margin-right: 1.5em;
+    }
+}
+
+@media (max-width: 470px) {
+    .content-card .content-img-card {
+        display: flex;
+        justify-content: center;
+        width: 50vw;
+        align-items: center;
+        margin: 0 auto;
     }
 }
 
@@ -806,10 +842,4 @@ img {
     justify-content: center;
 }
 
-header {
-    background-image: url(img/arboles.jpg);
-    background-repeat: repeat;
-    background-attachment: fixed ;
-    
-}
 
