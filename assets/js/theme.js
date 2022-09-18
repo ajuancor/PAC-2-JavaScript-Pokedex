@@ -19,8 +19,6 @@ radios_theme.forEach( x => {
 function selectTheme(color) {
     switch (color) {
         case 'dark':
-            console.log('dark');
-
             // Es clica el botó light
             const btn_dark = document.querySelector('#dark_theme');
             btn_dark.checked = true;
@@ -32,8 +30,6 @@ function selectTheme(color) {
 
         case 'light':
         default:
-            console.log('light');
-
             // Es clica el botó light
             const btn_light = document.querySelector('#light_theme');
             btn_light.checked = true;
@@ -63,36 +59,8 @@ async function deleteFirstPokemon() {
 /* RANDOM ID's */
 // Genera número aleatori
 function getRandomId(max) {
-    console.log('random');
     return Math.floor(Math.random() * max);
 }
-
-/* URLs */
-/*
-function clearParamsURL() {
-    location.href = location.href.replace(location.search,'');
-}
-*/
-
-/*
-function checkPokeParams() {
-    if ( pokeParam != null && pokeParam != '' ) {
-        pokemon_id = true;
-
-        // Buscador ocult
-        const content_searcher = document.querySelector('.content-searcher');
-        content_searcher.style.display = 'none';
-
-        // Botó tornar al inici
-        const list_original = document.querySelector('.list-original');
-        list_original.style.display = 'block';
-
-        // Al clicar el botó torna a llistar els primers pokemons
-        const button_back = document.querySelector('#btn-back-original-list');
-        button_back.addEventListener('click', backToOriginalList);
-    }
-}
-*/
 
 // Canvia l'URL
 function changeURL(id) {
