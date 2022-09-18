@@ -1,5 +1,4 @@
 import { getDataAllPokemon, getDataPokemon } from '../services/getPokemons.js';
-//import getDataPokemon from '../services/getPokemons.js';
 
 var starter_pokemon = [];
 var id;
@@ -53,13 +52,6 @@ form_pokemon.addEventListener('keyup', getTextSearcher);
 button_pokemon.addEventListener('click', getAllPokemon);
 
 checkPokeParams();
-
-/*
-if ( pokemon_id ) {
-    const button_back = document.querySelector('#btn-back-original-list');
-    button_back.addEventListener('click', backToOriginalList);
-}
-*/
 
 // First crides a funcions
 if ( pokemon_id ) {
@@ -431,33 +423,6 @@ function restartFirstCards() {
     firstCards();
 }
 
-// Canvi de dades al canviar l'URL
-/*
-function changeContextURL() {
-    //history.pushState("", document.title, '?pokeID=' + id);
-    
-    // Comprova els parametres de la URL
-    pokeParam = checkURLParams();
-    
-    checkPokeParams();
-
-    clearCardsPokemon();
-    getDetailPokemon();
-    
-    //console.log(pokeParam);
-}
-*/
-
-// Mostrar spinner
-// Status possibles -> Visible = 'flex'
-//                  -> Ocult = 'none'
-/*
-function loader(status) {
-    const spinner = document.querySelector('.content-spinner');
-    spinner.style.display = status;
-}
-*/
-
 // Torna a les cartes del inici
 async function backCardsPokemon(name_class = "list-card-pokemon") {
     clearCardsPokemon(name_class);
@@ -486,7 +451,6 @@ async function backCardsPokemon(name_class = "list-card-pokemon") {
 // Pinta les cartes
 function printCardPokemon(html, name_class = "list-card-pokemon") {
     const list = document.querySelector("#pokemon-list ."+name_class);
-    //list.innerHTML += html;
     list.append(html);
 }
 
