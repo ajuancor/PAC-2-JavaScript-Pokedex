@@ -1,4 +1,4 @@
-import { getDataAllPokemon, getDataPokemon } from '../services/getPokemons.js';
+import { getDataPokemon } from '../services/getPokemons.js';
 var starters_pokemon = [];
 var first_pokemon = [];
 var second_pokemon = [];
@@ -9,14 +9,6 @@ loopStarterPokemon();
 
 // Listeners
 let select_pokemon = document.querySelector('.list-card-pokemon');
-//select_pokemon.addEventListener('click', listenerPokemonCard);
-
-/*
-select_pokemon.addEventListener('click', function(card) {
-    //console.log(card.target.dataset.pokeid);
-    selectPokemon(card);
-});
-*/
 
 function createListenerPokemonCard() {
     select_pokemon.addEventListener('click', listenerPokemonCard);
@@ -75,7 +67,6 @@ async function selectPokemon(card) {
 
     // Obté les dades d'un pokemon
     const pkm = await getDataPokemon('https://pokeapi.co/api/v2/pokemon/' + id_pokemon);
-    console.log(pkm);
 
     if ( pkm !== '' ) {
         if ( first_pokemon.length === 0 ) {
@@ -184,15 +175,6 @@ function buildCardPokemon(pokemon) {
     // Attack & Defense        
     template.querySelector('.stat-attack').innerHTML = pokemon.stats[1].base_stat;
     template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
-
-    // MORE INFO
-    //template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+');');
-    
-    /*template.querySelector('.btn-more-info').setAttribute('id', 'pokemon-more-'+pokemon.id);
-    const btn_more = template.querySelector('#pokemon-more-'+pokemon.id);
-    btn_more.addEventListener('click', function(){
-        alert('hola');
-    });*/
 
     const clone = template.cloneNode(true);
     fragment.appendChild(clone);
