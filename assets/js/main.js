@@ -142,8 +142,6 @@ async function getDetailPokemon() {
             if ( pkm_specie !== '' ) {
                 pkm['more_info'] = pkm_specie;
             }
-        
-            console.log(pkm);
 
             buildCardPokemon(pkm);
         } else {
