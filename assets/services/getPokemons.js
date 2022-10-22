@@ -1,3 +1,6 @@
+/* comentari: ben pensada l'estructura del codi i l´ús d'import/export */
+/* comentari: el codi que no s'utilitzi s'haura d'eliminar, per evitar confusions i tenir un codi més net */
+
 // Controller
 let controller = new AbortController();
 let signal = controller.signal;
@@ -23,6 +26,8 @@ export async function getDataAllPokemon(offset = 0, limit = 905) {
 }
 
 export async function getDataPokemon(url) {
+    //comentari (3): aquí es podria crear una constant amb la url base https://pokeapi.co/api/v2/pokemon/ i afegir-li l'id rebut, per exemple:
+    // const url = `https://pokeapi.co/api/v2/pokemon/${id}`, igual que s'està fent a la funció getDataAllPokemon
     return fetch(url, { signal: controller.signal })
 		.then((res) => res.json())
 		.then((response) => {

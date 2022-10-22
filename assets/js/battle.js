@@ -31,6 +31,7 @@ function getStarterPokemon() {
             // Obté un id aleatori
             const id = getRandomId(905);
             
+            // comentari (1): en aqueset punt, potser només guardant el número ID ja n'hi hauria prou. Així l'operació de includes seria una mica (estem parlant de milisegons) més ràpida
             let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
             
             // Si id no esta al array l'afegeix
@@ -49,6 +50,7 @@ async function loopStarterPokemon() {
 
         for (let id_pokemon of starters_pokemon) {
             // Obté les dades d'un pokemon
+            // comentari (2): aquí enllo de passar-li tota la url, també es podria passar només l'id
             const pkm = await getDataPokemon(id_pokemon);
     
             // Construeix una carta i la pinta
@@ -120,6 +122,7 @@ function battleCards() {
         select_pokemon.classList.remove('selected-cards');
         
         // Elimina els listener per a que l'usuari no pugui triar més cartes
+        // comentari: bon punt a tenir en compte!
         removeListenerPokemonCard();
 
         // Es mou fins al resultat final
@@ -127,6 +130,7 @@ function battleCards() {
     }
 }
  
+// comentari: bon ús de templates per construïr les cartes
 function buildCardPokemon(pokemon) {
     const template = document.querySelector('#template-card-pkm').content;
     const fragment = document.createDocumentFragment();
