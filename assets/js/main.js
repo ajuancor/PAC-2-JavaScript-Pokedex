@@ -1,7 +1,10 @@
-var ids_pokemons = [];
+import { getDataAllPokemon, getDataPokemon } from '../services/getPokemons.js';
+
+var starter_pokemon = [];
 var id;
 var no_cards = false;
 let data_pokemon = {};
+var working = false;
 
 // Variable dedicada a un pokemon individual
 var pokemon_id = false;
@@ -26,9 +29,12 @@ function checkPokeParams() {
 }
 
 // Controller
-let controller = new AbortController();
-let signal = controller.signal;
+//let controller = new AbortController();
+//let signal = controller.signal;
 var controllerTime = "";
+
+// Reiniciar pokemons inicials
+const restart_starters_pokemon = document.querySelector('#btn-restart-starters');
 
 // Buscador de pokemons
 const form_pokemon = document.querySelector('#search-pokemon');
@@ -36,6 +42,9 @@ const button_pokemon = document.querySelector('#btn-search-pokemon');
 
 
 /* LISTENERS */
+// Crea un listener per reiniciar les cartes inicials
+restart_starters_pokemon.addEventListener('click', restartFirstCards);
+
 // Al escriure el nom d'un pokemon
 form_pokemon.addEventListener('keyup', getTextSearcher);
 
@@ -44,23 +53,11 @@ button_pokemon.addEventListener('click', getAllPokemon);
 
 checkPokeParams();
 
-/*
-if ( pokemon_id ) {
-    const button_back = document.querySelector('#btn-back-original-list');
-    button_back.addEventListener('click', backToOriginalList);
-}
-*/
-
 // First crides a funcions
 if ( pokemon_id ) {
     getDetailPokemon();
 } else {
     getAllPokemon();
-}
-
-// Genera número aleatori
-function getRandomId(max) {
-    return Math.floor(Math.random() * max);
 }
 
 // Espera una mica abans de buscar el contingut del buscador
@@ -71,35 +68,34 @@ function getTextSearcher() {
 }
 
 // Obté les dades de tots els pokemons
-function getAllPokemon() {
+async function getAllPokemon() {
     if ( Object.entries(data_pokemon).length !== 0 ) {
         
+        // Formulari per buscar
         if ( form_pokemon.value != '' ) {
-            /* if (working) {
-                controller.abort();
-                working = false;
-                console.log("abort");
-            }*/
+           
             clearCardsPokemon();
             
             // Buscador
             const text_search = form_pokemon.value.toLowerCase();
+            working = true;
             let exit_search = false;
-            //working = true;
             
             for( let pokemon of data_pokemon.results ) {
                 
-                if ( pokemon.name.indexOf(text_search) === 0 /* && working */ ) {
-                    console.log(text_search);
-                    getDataPokemon(pokemon.url);
+                if ( pokemon.name.indexOf(text_search) === 0 && working ) {
+                    //console.log(text_search);
                     
+                    const pkm = await getDataPokemon(pokemon.url);
+                    buildCardPokemon(pkm);
+
                     if ( !exit_search ) {
                         exit_search = true;
                     }
                 }
             }
 
-            //working = false;
+            working = false;
 
             if ( !exit_search ) {
                 no_cards = true;
@@ -111,11 +107,13 @@ function getAllPokemon() {
         }
 
         else {
-            if ( ids_pokemons.length === 0 ) {
+            if ( starter_pokemon.length === 0 ) {
                 firstCards();
             }
 
             else {
+                if ( working ) { working = false; }
+
                 // Cartes Originals
                 backCardsPokemon();
                 loader('none');
@@ -125,52 +123,40 @@ function getAllPokemon() {
     }
     
     else {
-        getDataAllPokemon();
+        data_pokemon = await getDataAllPokemon();
+        //console.log(data_pokemon);
+        getAllPokemon();
     }
 
 }
 
-/* PART DATA-PROMISES */
-const isResponseOk = async (response) => {
-    if (!response.ok)
-        throw new Error(response.status);
-    //return response.text();
-    return await response.json();
-}
-
-function getDataAllPokemon() {
-    fetch('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=905')
-    .then(response => isResponseOk(response))
-    .then(data => {
-        //console.log(data);
-        data_pokemon = data;
-        getAllPokemon();
-    })
-    .catch(err => console.error("ERROR: ", err.message));
-}
-
-function getDataPokemon(url) {
-    fetch(url, { signal: controller.signal })
-    .then(response => isResponseOk(response))
-    .then(data => {
-        console.log(data);
-        buildCardPokemon(data);
-    })
-    .catch(err => {
-        if ( pokemon_id ) {
-            buildCardPokemon('');
-        }  
-        console.error("ERROR: ", err.message);
-    });
-}
-
-// Fa un crida individual
-function getDetailPokemon() {
+// Fa una crida individual
+async function getDetailPokemon() {
     let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + pokeParam;
     try {
-        getDataPokemon(url_pokemon);
+        let pkm = await getDataPokemon(url_pokemon);
+        if ( pkm !== '' ) {
+            const url_pokemon_species = 'https://pokeapi.co/api/v2/pokemon-species/' + pokeParam;
+        
+            const pkm_specie = await getDataPokemon(url_pokemon_species);
+            if ( pkm_specie !== '' ) {
+                pkm['more_info'] = pkm_specie;
+            }
+
+            buildCardPokemon(pkm);
+        } else {
+            buildCardPokemon('');
+            
+            setTimeout( function() {
+                location.href = "/index.html";
+            }, 1500);
+        }
     } catch (error) {
-        printCardPokemon('');
+        buildCardPokemon('');
+        
+        setTimeout( function() {
+            location.href = "/index.html";
+        }, 1500);
     }
 }
 
@@ -178,174 +164,192 @@ function getDetailPokemon() {
 function buildCardPokemon(pokemon) {
     // Carta individual
     if ( pokemon != '' && pokemon_id ) {
-        const detail = document.querySelector("#pokemon-list .detail-card-pokemon");
-        detail.style.display = 'block';
 
-        var html = '<article class="card" data-pokeID="'+ pokemon.id +'">';
-        html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
+        const template = document.querySelector('#template-card-pkm-solo').content;
+	    const fragment = document.createDocumentFragment();
 
-        // Imgs
-        html += '<div class="imgs-pokemon">';
-        
-            // Img Default pokemon
-            html += '<div class="default-pokemon">';
-                html += '<div class="content-img-card">';
-                
-                // Front img
-                html += '<div class="front">';
-                if ( pokemon.sprites.front_default != null ) {
-                    html += '<img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+        // ID
+        const pokeid = template.querySelector('.card');
+        pokeid.dataset.pokeid = pokemon.id;
+
+        // TITLE
+        template.querySelector('.card-title').innerHTML = pokemon.name;
+
+        // IMAGES
+        // Default form
+        // Front
+        if ( pokemon.sprites.front_default != null ) {
+            template.querySelector('.default-pokemon .front .img-card-pokemon').setAttribute('src', pokemon.sprites.front_default);
+        } else {
+            template.querySelector('.default-pokemon .front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.default-pokemon .front .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+        // Back
+        if ( pokemon.sprites.back_default != null ) {
+            template.querySelector('.default-pokemon .back .img-card-pokemon').setAttribute('src', pokemon.sprites.back_default);
+        } else {
+            template.querySelector('.default-pokemon .back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.default-pokemon .back .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+        // Shiny form
+        // Front
+        if ( pokemon.sprites.front_shiny != null ) {
+            template.querySelector('.shiny-pokemon .front .img-card-pokemon').setAttribute('src', pokemon.sprites.front_shiny);
+        } else {
+            template.querySelector('.shiny-pokemon .front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.shiny-pokemon .front .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+        // Back
+        if ( pokemon.sprites.back_shiny != null ) {
+            template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('src', pokemon.sprites.back_shiny);
+        } else {
+            template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.shiny-pokemon .back .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+        // DESCRIPTION
+        let text_description = '';
+
+        // Busquem description en espanyol
+        pokemon.more_info.flavor_text_entries.forEach( function(value, index, array) {
+            if (value.language.name == 'es') {
+                //console.dir(value);
+                if (value.version.name == 'red') {
+                    text_description = value.flavor_text;
                 }
-                html += '</div></div>';
-                
-                html += '<div class="content-img-card">';
 
-                // Back img
-                html += '<div class="back">';
-                if ( pokemon.sprites.back_default != null ) {
-                    html += '<img src="'+ pokemon.sprites.back_default +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+                else if (value.version.name == 'sword' ) {
+                    text_description = value.flavor_text;
                 }
-                html += '</div></div>';
 
-            html += '</div>';
-
-            // Img Shiny pokemon
-            html += '<div class="shiny-pokemon">';
-                html += '<div class="content-img-card">';
-                
-                // Front img
-                html += '<div class="front">';
-                if ( pokemon.sprites.front_shiny != null ) {
-                    html += '<img src="'+ pokemon.sprites.front_shiny +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
+                else {
+                    if (text_description == '') {
+                        text_description = pokemon.more_info.flavor_text_entries[index].flavor_text;
+                    }
                 }
-                html += '</div></div>';
-                
-                html += '<div class="content-img-card">';
-        
-                // Back img
-                html += '<div class="back">';
-                if ( pokemon.sprites.back_shiny != null ) {
-                    html += '<img src="'+ pokemon.sprites.back_shiny +'" class="img-card-pokemon" />';
-                } else {
-                    html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-                }
-                html += '</div></div>';
+            }
+        });
 
-            html += '</div>';
+        // Apliquem la description a la carta
+        const description = template.querySelector('.description-pokemon');
+        if (text_description != '') {
+            description.innerHTML = '<p>' + text_description + '</p>';
+        }
 
-        html += '</div>';
-        
-        // Content text
-        html += '<div class="content-text-card mt10">';
-        html += '<ul>';
-        html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
+        // STATS
+        // Types
         if ( pokemon.types[0].type.name != null ) {
             html += selectPokemonType(pokemon.types[0].type.name);
+            template.querySelector('.content-types-pokemon').innerHTML = selectPokemonType(pokemon.types[0].type.name);
         }
         
        if ( pokemon.types.hasOwnProperty(1) ) {
             if ( pokemon.types[1].type.name != null ) {
                 html += selectPokemonType(pokemon.types[1].type.name);
+                template.querySelector('.content-types-pokemon').innerHTML += selectPokemonType(pokemon.types[1].type.name);
             }
         }
-        html += '</span></li>';
-        html += '<li><span>Atac</span> <span>'+ pokemon.stats[1].base_stat +'</span></li>';
-        html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
-        html += '</ul>';
-        html += '</div>';
 
-        html += '</article>';
+        // Stats
+        template.querySelector('.stat-hp').innerHTML = pokemon.stats[0].base_stat;
+        template.querySelector('.stat-attack').innerHTML = pokemon.stats[1].base_stat;
+        template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
+        template.querySelector('.stat-attack-special').innerHTML = pokemon.stats[3].base_stat;
+        template.querySelector('.stat-defense-special').innerHTML = pokemon.stats[4].base_stat;
+        template.querySelector('.stat-speed').innerHTML = pokemon.stats[5].base_stat;
 
-        printCardPokemon(html,'detail-card-pokemon');
+        const clone = template.cloneNode(true);
+		fragment.appendChild(clone);
+
+        printCardPokemon(fragment,'detail-card-pokemon');
+
+        // Aquest funció serveix perquè el footer es mantingui a la part final de la pàgina
+        addFooterBottom(false);
     }
 
     else if ( pokemon != '' && !no_cards ) {
-        var html = '<article class="card" data-pokeID="'+pokemon.id+'">';
-        html += '<h2 class="title text-center">'+ pokemon.name +'</h2>';
-        
-        // Img
-        html += '<div class="content-img-card">';
-        
-        // Front img
-        html += '<div class="front pointer" onclick="changeCardImg(this); return false;">';
-        if ( pokemon.sprites.front_default != null ) {
-            html += '<img src="'+ pokemon.sprites.front_default +'" class="img-card-pokemon" />';
-        } else {
-            html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-        }
-        html += '</div>';
-        
-        // Back img
-        html += '<div class="back pointer" onclick="changeCardImg(this); return false;" style="display: none;">';
-        if ( pokemon.sprites.back_default != null ) {
-            html += '<img src="'+ pokemon.sprites.back_default +'" class="img-card-pokemon" />';
-        } else {
-            html += '<img src="./assets/img/default-pokemon.png" class="img-card-pokemon" />';
-        }
-        html += '</div>';
-        html += '</div>';
 
-        html += '<div class="content-text-card mt10">';
-        html += '<ul>';
-        html += '<li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon">';
+        const template = document.querySelector('#template-card-pkm').content;
+	    const fragment = document.createDocumentFragment();
+
+        // ID
+        const pokeid = template.querySelector('.card');
+        pokeid.dataset.pokeid = pokemon.id;
+
+        // TITLE
+        template.querySelector('.card-title').innerHTML = pokemon.name;
+
+        // IMAGES
+        // Front
+        if ( pokemon.sprites.front_default != null ) {
+            template.querySelector('.front .img-card-pokemon').setAttribute('src', pokemon.sprites.front_default);
+        } else {
+            template.querySelector('.front .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.front .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+        // Back
+        if ( pokemon.sprites.back_default != null ) {
+            template.querySelector('.back .img-card-pokemon').setAttribute('src', pokemon.sprites.back_default);
+        } else {
+            template.querySelector('.back .img-card-pokemon').setAttribute('src', './assets/img/default-pokemon.png');
+        }
+        template.querySelector('.back .img-card-pokemon').setAttribute('alt', pokemon.name);
+
+		//template.querySelector('.card-image').setAttribute('src', gif.url);
+		//template.querySelector('.card-image').setAttribute('alt', gif.title);
+		
+        // STATS
+        // Types
         if ( pokemon.types[0].type.name != null ) {
             html += selectPokemonType(pokemon.types[0].type.name);
+            template.querySelector('.content-types-pokemon').innerHTML = selectPokemonType(pokemon.types[0].type.name);
         }
         
        if ( pokemon.types.hasOwnProperty(1) ) {
             if ( pokemon.types[1].type.name != null ) {
                 html += selectPokemonType(pokemon.types[1].type.name);
+                template.querySelector('.content-types-pokemon').innerHTML += selectPokemonType(pokemon.types[1].type.name);
             }
         }
-        html += '</span></li>';
-        html += '<li><span>Atac</span> <span>'+ pokemon.stats[1].base_stat +'</span></li>';
-        html += '<li><span>Defensa</span> <span>'+ pokemon.stats[2].base_stat +'</span></li>';
-        html += '</ul>';
-        html += '</div>';
-        html += '<div class="content-more-info text-center">';
-        html += '<button class="btn btn-more-info" onclick="changeURL('+ pokemon.id +')">Més informació</button>'
-        html += '</div>';
-        html += '</article>';
 
-        printCardPokemon(html);
+        // Attack & Defense        
+        template.querySelector('.stat-attack').innerHTML = pokemon.stats[1].base_stat;
+        template.querySelector('.stat-defense').innerHTML = pokemon.stats[2].base_stat;
+
+        // MORE INFO
+        template.querySelector('.btn-more-info').setAttribute('onclick', 'changeURL('+pokemon.id+');');
+        
+        const clone = template.cloneNode(true);
+		fragment.appendChild(clone);
+
+        printCardPokemon(fragment);
+
+        // Aquest funció serveix perquè el footer es mantingui a la part final de la pàgina
+        addFooterBottom(false);
     }
 
     else {
-        var html = "<h1>No s'han trobat resultats</h1>";
+        var msg = "No s'han trobat resultats";
+        var html = document.createElement('div');
+        html.innerHTML = msg;
+        html.classList.add('error-message');
         
+        const list_error = document.querySelector("#pokemon-list .list-card-pokemon");
+        list_error.classList.add('error-list');
+
         printCardPokemon(html);
-        
+
+        // Aquest funció serveix perquè el footer es mantingui a la part final de la pàgina
+        addFooterBottom(true);
+
         setTimeout(no_cards = false, 500);
     }
 
     //console.log(pokemon);
-}
-
-/*
-function clearParamsURL() {
-    location.href = location.href.replace(location.search,'');
-}
-*/
-
-function changeURL(id) {
-    //location.search = '?pokeID=' + id;
-    history.pushState("", document.title, '?pokeID=' + id);
-    
-    // Comprova els parametres de la URL
-    checkURLParams();
-
-    checkPokeParams();
-
-    clearCardsPokemon();
-    getDetailPokemon();
-    
-    console.log(pokeParam);
 }
 
 function backToOriginalList() {
@@ -353,126 +357,72 @@ function backToOriginalList() {
 
     history.pushState("", document.title, window.location.pathname);
 
-    // Neteja la card individual
-    // Pinta les primeres cartes
+    // Neteja la card individual i pinta les primeres cartes
     backCardsPokemon('detail-card-pokemon');
 }
 
-
-// Canvia la imatge del pokemon
-function changeCardImg(card) {
-    if ( card.classList.contains('front') ) {
-        card.style.display = 'none';
-        card.nextElementSibling.style.display = 'block';
-   } else {
-        card.style.display = 'none';
-        card.previousElementSibling.style.display = 'block';
-    }
-}
-
-function selectPokemonType(type) {
-    let icon = '';
-    switch (type) {
-        case 'normal':
-        default:
-            icon = '<img src="assets/img/icons/icon_normal.webp" class="img-type-pokemon" alt="Normal" title="Normal" />';
-            break;
-        case 'fighting':
-            icon = '<img src="assets/img/icons/icon_lucha.webp" class="img-type-pokemon" alt="Lluita" title="Lluita" />';
-            break;
-        case 'flying':
-            icon = '<img src="assets/img/icons/icon_volador.webp" class="img-type-pokemon" alt="Volador" title="Volador" />';
-            break;
-        case 'poison':
-            icon = '<img src="assets/img/icons/icon_veneno.webp" class="img-type-pokemon" alt="Verí" title="Verí" />';
-            break;
-        case 'ground':
-            icon = '<img src="assets/img/icons/icon_tierra.webp" class="img-type-pokemon" alt="Terra" title="Terra" />';
-            break;
-        case 'rock':
-            icon = '<img src="assets/img/icons/icon_roca.webp" class="img-type-pokemon" alt="Roca" title="Roca" />';
-            break;
-        case 'bug':
-            icon = '<img src="assets/img/icons/icon_bicho.webp" class="img-type-pokemon" alt="Bicho" title="Bicho" />';
-            break;
-        case 'ghost':
-            icon = '<img src="assets/img/icons/icon_fantasma.webp" class="img-type-pokemon" alt="Fantasma" title="Fantasma" />';
-            break;
-        case 'steel':
-            icon = '<img src="assets/img/icons/icon_acero.webp" class="img-type-pokemon" alt="Acero" title="Acero" />';
-            break;
-        case 'fire':
-            icon = '<img src="assets/img/icons/icon_fuego.webp" class="img-type-pokemon" alt="Fuego" title="Fuego" />';
-            break;
-        case 'water':
-            icon = '<img src="assets/img/icons/icon_agua.webp" class="img-type-pokemon" alt="Agua" title="Agua" />';
-            break;
-        case 'grass':
-            icon = '<img src="assets/img/icons/icon_planta.webp" class="img-type-pokemon" alt="Planta" title="Planta" />';
-            break;
-        case 'electric':
-            icon = '<img src="assets/img/icons/icon_electrico.webp" class="img-type-pokemon" alt="Electric" title="Electric" />';
-            break;
-        case 'psychic':
-            icon = '<img src="assets/img/icons/icon_psiquico.webp" class="img-type-pokemon" alt="Psiquic" title="Psiquic" />';
-            break;
-        case 'ice':
-            icon = '<img src="assets/img/icons/icon_hielo.webp" class="img-type-pokemon" alt="Gel" title="Gel" />';
-            break;
-        case 'dragon':
-            icon = '<img src="assets/img/icons/icon_dragon.webp" class="img-type-pokemon" alt="Dragon" title="Dragon" />';
-            break;
-        case 'dark':
-            icon = '<img src="assets/img/icons/icon_siniestro.webp" class="img-type-pokemon" alt="Siniestro" title="Siniestro" />';
-            break;
-        case 'fairy':
-            icon = '<img src="assets/img/icons/icon_hada.webp" class="img-type-pokemon" alt="Fada" title="Fada" />';
-            break;
-    }
-
-    return icon;
-}
-
 // Primeres cartes 
-function firstCards() {
-    // No para fins a tenir 10 números
-    while ( ids_pokemons.length < 10 ) {
-        id = getRandomId(905);
-        
-        let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
-        //console.log(url_pokemon);
-        
-        // Si id no esta al array l'afegeix
-        if ( !ids_pokemons.includes(url_pokemon) && id != 0 && id !== null ) {
-            ids_pokemons.push(url_pokemon);
+async function firstCards() {
+    // Obté cartes de localStorage
+    const pokemons = getFirstPokemon();
+    if ( pokemons !== null ) {
+        starter_pokemon = pokemons;
+    }
+   
+    // console.log(starter_pokemon);
+
+    // Si starter_pokemon esta buit
+    if ( starter_pokemon.length === 0 ) {
+
+        // No para fins a tenir 10 números
+        while ( starter_pokemon.length < 10 ) {
+            
+            // Obté un id aleatori
+            id = getRandomId(905);
+            
+            let url_pokemon = 'https://pokeapi.co/api/v2/pokemon/' + id;
+            //console.log(url_pokemon);
+            
+            // Si id no esta al array l'afegeix
+            if ( !starter_pokemon.includes(url_pokemon) && id != 0 && id !== null ) {
+                starter_pokemon.push(url_pokemon);
+            }
         }
+
+        // Guarda les primeres cartes
+        saveFirstPokemon(starter_pokemon);
     }
 
-    for (let id_pokemon of ids_pokemons) {
-        getDataPokemon(id_pokemon);
+    loader('flex');
+    
+    for (let id_pokemon of starter_pokemon) {
+        // Obté les dades d'un pokemon
+        const pkm = await getDataPokemon(id_pokemon);
+
+        // Construeix una carta i la pinta
+        buildCardPokemon(pkm);
     }
+
+    loader('none');
 }
 
-// Mostrar spinner
-function loader(status) {
-    const spinner = document.querySelector('.content-spinner');
-    spinner.style.display = status;
-}
+// Reinicia les cartes inicials
+function restartFirstCards() {
+    // Esborra els pokemons guardats al localStorage
+    deleteFirstPokemon();
 
-// Pinta les cartes
-function printCardPokemon(html, name_class = "list-card-pokemon") {
-    const list = document.querySelector("#pokemon-list ."+name_class);
-    list.innerHTML += html;
-}
+    // Neteja el template
+    clearCardsPokemon();
 
-// Neteja les cartes
-function clearCardsPokemon(name_class = "list-card-pokemon") {
-    const list = document.querySelector("#pokemon-list ."+name_class);
-    list.innerHTML = '';
+    // Buida els pokemons d'aquesta array
+    starter_pokemon = [];
+
+    // Torna a seleccionar pokemons
+    firstCards();
 }
 
 // Torna a les cartes del inici
-function backCardsPokemon(name_class = "list-card-pokemon") {
+async function backCardsPokemon(name_class = "list-card-pokemon") {
     clearCardsPokemon(name_class);
 
     // Buscador visible
@@ -483,7 +433,34 @@ function backCardsPokemon(name_class = "list-card-pokemon") {
     const list_original = document.querySelector('.list-original');
     list_original.style.display = 'none';
 
-    for (let id_pokemon of ids_pokemons) {
-        getDataPokemon(id_pokemon);
+    // Si ja s'han seleccionat les primeres cartes
+    if ( starter_pokemon.length !== 0 ) {
+        for (let id_pokemon of starter_pokemon) {
+            const pkm = await getDataPokemon(id_pokemon);
+            buildCardPokemon(pkm);
+        }
+    } 
+    
+    else {
+        firstCards();
+    }
+}
+
+// Pinta les cartes
+function printCardPokemon(html, name_class = "list-card-pokemon") {
+    const list = document.querySelector("#pokemon-list ."+name_class);
+    list.append(html);
+}
+
+// Neteja les cartes
+function clearCardsPokemon(name_class = "list-card-pokemon") {
+    const list = document.querySelector("#pokemon-list ."+name_class);
+    list.innerHTML = '';
+    
+    if ( name_class == "list-card-pokemon" ) {
+        // Elimina la classe dissenyada per mostrar el contingut dels no resultat o errors
+        if ( list.classList.contains('error-list') ) {
+            list.classList.remove('error-list')
+        }
     }
 }

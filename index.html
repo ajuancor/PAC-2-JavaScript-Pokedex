@@ -1,3 +1,4 @@
+<!-- comentari: molt bona feina en general!! -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,17 +10,33 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 
 </head>
-<body>
-    <header class="">
-        <div class="container">
-            <h1 class="text-center">POKÉDEX</h1>
+<body id="main-body" class="">
+    <header class="header">
+        <div class="container ">
+            <div class="row">
+                <div class="content-header">
+                    <h1 class="main-title">POKÉDEX</h1>
+                    <!-- <button id="btn_theme" class="btn btn-theme">Hola</button> -->
+                    <div class="controls align-self-center">
+                        <div class="content-control">
+                            <label for="dark_theme">Dark</label>
+                            <input type="radio" name="theme" id="dark_theme" value="dark" />
+                        </div>
+
+                        <div class="content-control">
+                            <label for="light_theme">Light</label>
+                            <input type="radio" name="theme" id="light_theme" value="light" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="main-menu">
             <div class="container">
                 <nav class="navbar-menu">
                     <ul>
-                        <li>
+                        <li class="active">
                             <a href="index.html" class="btn active">Home</a>
                         </li>
                         <li>
@@ -30,33 +47,164 @@
             </div>
         </div>
     </header>
-
     <section id="pokemon-list" class="container mb70">
          <div class="content-searcher">
+            <div class="restart-starters">
+                <button id="btn-restart-starters" class="btn btn-retrostyle btn-restart-starter">Reiniciar inicials <img class="iconbtn" src="/assets/css/img/iconbtn.jpg"></button>
+            </div>
+
             <div class="searcher">
                 <input type="text" value="" name="pokemonID" id="search-pokemon" placeholder="Introdueix un Pokémon..." class="input_search" />
-                <button id="btn-search-pokemon" class="fa fa-search btn button_search no_link">Buscar</button>
+                <button id="btn-search-pokemon" class="fa fa-search btn button_search no_link btn-retrostyle">Buscar <img class="iconbtn" src="/assets/css/img/iconbtn.jpg"></button>
             </div>
         </div>
 
         <div class="list-original mt10" style="display: none;">
-            <button id="btn-back-original-list" class="btn btn-back-list">Torna al inici</button>
+            <button id="btn-back-original-list" class="btn btn-retrostyle btn-back-list">Torna al inici <img class="iconbtn" src="/assets/css/img/iconbtn.jpg"></button>
         </div>
 
         <div class="content-spinner" style="display: none;">
             <div class="spinner"></div>
         </div>
 
+        <div class="detail-card-pokemon"></div>
+
         <div class="list-card-pokemon"></div>
-
-        <div class="detail-card-pokemon" style="display: none;"></div>
-
     </section>
 
+    <!-- TEMPLATE CARD INDIVIDUAL -->
+    <template id="template-card-pkm-solo">
+        <article class="card" data-pokeid="">
+            <h2 class="title card-title text-center"></h2>
+            
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <!-- Content Imgs -->
+                    <div class="imgs-pokemon">
+                    
+                        <!-- Img Default pokemon -->
+                        <div class="default-pokemon">
+                            <div class="content-img-card">
+                                <!-- Front img -->
+                                <div class="front">
+                                    <img src="" class="img-card-pokemon" />
+                                </div>
+                            </div>
+                            
+                            <div class="content-img-card">
+                                <!-- Back img -->
+                                <div class="back">
+                                    <img src="" class="img-card-pokemon" />
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Img Shiny pokemon -->
+                        <div class="shiny-pokemon">
+                            <div class="content-img-card">
+                                <!-- Front img -->
+                                <div class="front">
+                                    <img src="" class="img-card-pokemon" />
+                                </div>
+                            </div>
+                            
+                            <div class="content-img-card">
+                                <!-- Back img -->
+                                <div class="back">
+                                    <img src="" class="img-card-pokemon" />
+                                </div>
+                            </div>    
+                        </div>
+            
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <!-- Content text -->
+                    <div class="content-text-card mt10">
+                        <div class="description-pokemon"></div>
+
+                        <ul class="types-pokemon">
+                            <li><span class="align-self-center">Tipus</span></li>
+                            <li><span class="content-types-pokemon"></span></li>
+                        </ul>
+                        
+                        <ul>
+                            <li class="stats-pokemon">
+                                <ul>
+                                    <li><span>Punts de salut</span></li>
+                                    <li><span class="stat-hp"></span></li>
+                                </ul>
+                                <ul>
+                                    <li><span>Atac</span></li>
+                                    <li><span class="stat-attack"></span></li>
+                                </ul>
+                                <ul>
+                                    <li><span>Defensa</span></li>
+                                    <li><span class="stat-defense"></span></li>
+                                </ul>
+                            </li>
+                            <li class="stats-pokemon">
+                                <ul>
+                                    <li><span>Atac especial</span></li>
+                                    <li><span class="stat-attack-special"></span></li>
+                                </ul>
+                                <ul>
+                                    <li><span>Defensa especial</span></li>
+                                    <li><span class="stat-defense-special"></span></li>
+                                </ul>
+                                <ul>
+                                    <li><span>Velocitat</span></li>
+                                    <li><span class="stat-speed"></span></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            </div>
+        </article>
+    </template>
+
+    <!-- TEMPLATE CARD -->
+    <template id="template-card-pkm">
+        <article class="card" data-pokeid="">
+            <h2 class="title card-title text-center"></h2>
+            
+            <!-- Img -->
+            <div class="content-img-card">
+                <!-- Front img -->
+                <div class="front pointer" onclick="changeCardImg(this); return false;">
+                    <img src="" class="img-card-pokemon" />
+                </div>
+                
+                <!-- Back img -->
+                <div class="back pointer" onclick="changeCardImg(this); return false;" style="display: none;">
+                    <img src="" class="img-card-pokemon" />
+                </div>
+            </div>
+            
+            <!-- Content text -->
+            <div class="content-text-card mt10">
+                <ul>
+                    <li><span class="align-self-center">Tipus</span> <span class="content-types-pokemon"></span></li>
+                    <li><span>Atac</span> <span class="stat-attack"></span></li>
+                    <li><span>Defensa</span> <span class="stat-defense"></span></li>
+                </ul>
+            </div>
+            
+            <!-- More info onclick="changeURL(document.querySelector('.card').dataset.pokeid); return false;"-->
+            <div class="content-more-info text-center">
+                <button class="btn btn-retrostyle btn-more-info">Més informació <img class="iconbtn" src="/assets/css/img/iconbtn.jpg"></button>
+            </div>
+        </article>
+    </template>
+    
     <footer class="main-footer">
         <section class="container">
             <div class="text-center">
-                <span>Copyright 2022 - Albert Juan Cortina "Juandale8"</span>
+                <span class="copyright">Copyright 2022 - Albert Juan i David Mañas</span>
             </div>
         </section>
     </footer>
@@ -69,11 +217,15 @@
             var queryString = window.location.search;
             var urlParams = new URLSearchParams(queryString);
             pokeParam = urlParams.get('pokeID');
+            
+            return pokeParam;
         }
 
         checkURLParams();
+        
     </script>
 
-    <script type="text/javascript" src="assets/js/main.js"></script>
+    <script defer type='module' src="assets/js/main.js"></script>
+    <script defer src="assets/js/theme.js"></script>
 </body>
 </html>
